@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Castin Karma — Portfolio Command Center</title>
+<style>
+  :root{
+    --bg:#f5f6f8; --ink:#0e1726; --ink2:#5b6676; --line:#e6e9ee; --card:#ffffff;
+    --blue:#3b6ef5; --green:#16a34a; --amber:#d97706; --slate:#64748b; --violet:#6d28d9;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  /* Header */
+  header{background:var(--ink);color:#fff;padding:16px 22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#3b6ef5,#6d28d9);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px}
+  .brand h1{font-size:16px;margin:0;font-weight:700;letter-spacing:.2px}
+  .brand .sub{font-size:12px;color:#9aa6b8;margin-top:1px}
+  .htag{font-size:10px;font-weight:700;letter-spacing:.5px;background:rgba(255,255,255,.12);padding:3px 8px;border-radius:6px;color:#cfd6e2}
+  .updated{font-size:11px;color:#9aa6b8}
+  .wrap{max-width:1100px;margin:0 auto;padding:22px}
+  /* Summary tiles */
+  .tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+  .tile{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .tile .k{font-size:11px;color:var(--ink2);font-weight:600;letter-spacing:.3px;text-transform:uppercase}
+  .tile .v{font-size:26px;font-weight:800;margin-top:6px}
+  .tile .v small{font-size:13px;font-weight:600;color:var(--ink2)}
+  /* Section */
+  .secrow{display:flex;align-items:baseline;justify-content:space-between;margin:6px 0 12px}
+  .secrow h2{font-size:14px;margin:0;font-weight:700}
+  .secrow .hint{font-size:12px;color:var(--ink2)}
+  /* Cards */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;cursor:pointer;transition:.15s;position:relative}
+  .card:hover{box-shadow:0 8px 24px rgba(15,23,42,.08);transform:translateY(-2px);border-color:#d7dce4}
+  .ctop{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+  .cname{font-size:15px;font-weight:700;line-height:1.25}
+  .platform{font-size:11px;color:var(--ink2);margin-top:3px;display:flex;align-items:center;gap:6px}
+  .dot{width:6px;height:6px;border-radius:50%;background:var(--blue);display:inline-block}
+  .pill{font-size:10px;font-weight:700;letter-spacing:.3px;padding:4px 9px;border-radius:999px;white-space:nowrap}
+  .pill.build{background:#fff7ed;color:var(--amber)}
+  .pill.live{background:#ecfdf3;color:var(--green)}
+  .pill.planned{background:#f1f5f9;color:var(--slate)}
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+  .kpi{background:#fafbfc;border:1px solid var(--line);border-radius:9px;padding:9px}
+  .kpi .kk{font-size:10px;color:var(--ink2);font-weight:600;text-transform:uppercase;letter-spacing:.3px}
+  .kpi .kv{font-size:17px;font-weight:800;margin-top:3px}
+  .cnote{font-size:11.5px;color:var(--ink2);margin-top:12px;display:flex;align-items:center;gap:6px}
+  .cnote .src{margin-left:auto;font-size:10px;background:#f1f5f9;color:var(--slate);padding:2px 7px;border-radius:5px}
+  /* Modal */
+  .ov{position:fixed;inset:0;background:rgba(8,15,30,.55);display:none;align-items:center;justify-content:center;padding:20px;z-index:30}
+  .ov.show{display:flex}
+  .modal{background:#fff;border-radius:16px;max-width:520px;width:100%;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+  .modal h3{margin:0;font-size:18px}
+  .modal .mp{font-size:12px;color:var(--ink2);margin-top:3px}
+  .mclose{float:right;border:none;background:#f1f5f9;width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:16px;color:var(--ink2)}
+  .mkpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}
+  .mrow{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px}
+  .mrow span:first-child{color:var(--ink2)}
+  .mrow span:last-child{font-weight:600}
+  footer{max-width:1100px;margin:0 auto;padding:8px 22px 30px;color:var(--ink2);font-size:11.5px}
+  @media(max-width:760px){.tiles{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <div class="logo">CK</div>
+    <div><h1>Portfolio Command Center</h1><div class="sub">Castin Karma LLC</div></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span class="htag">PRIVATE</span>
+    <span class="updated" id="updated">—</span>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="tiles" id="tiles"></div>
+  <div class="secrow"><h2>Projects</h2><span class="hint">Tap a card for details</span></div>
+  <div class="grid" id="grid"></div>
+</div>
+
+<footer id="footer"></footer>
+
+<div class="ov" id="ov" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modal"></div>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────
+// Early/sample values. Live wiring (monday webhooks, Stripe, etc.) pending.
+const PROJECTS = [
+  {
+    id:"cert", name:"Certification & License Expiry Tracker", platform:"monday.com marketplace",
+    status:"build", mrr:0, customers:0, trials:0, source:"monday webhooks (not yet wired)",
+    note:"App #1 — flagship recurring",
+    detail:{
+      Stage:"MVP built & validated on live monday data; prepping for review/submit",
+      Tests:"25 / 25 passing",
+      Pricing:"Free / $25 / $49 / $99 per month",
+      "First $ target":"~Aug–Sep 2026",
+      "Year-end target":"~$1–2k/mo",
+      Differentiators:"Bulk session completion · Who's-qualified matrix"
+    }
+  },
+  {
+    id:"coi", name:"COI / Vendor-Document Expiry Tracker", platform:"monday.com marketplace",
+    status:"planned", mrr:0, customers:0, trials:0, source:"monday webhooks",
+    note:"App #2 — shares ~70% of code with #1",
+    detail:{Stage:"Planned — fast follow after App #1", Pricing:"~$40–120/mo", "Sherlock risk":"Low"}
+  },
+  {
+    id:"templates", name:"Niche Website Template Catalog", platform:"Framer · Webflow · Gumroad",
+    status:"planned", mrr:0, customers:0, trials:0, source:"Gumroad / Framer (manual + API)",
+    note:"One-time sales — fast cash lever",
+    detail:{Stage:"Candidate — pending green light", Model:"One-time per template ($500–2k lifetime each)"}
+  }
+];
+
+// ── RENDER ────────────────────────────────────────────────────────────
+const money = n => "$"+n.toLocaleString();
+const STATUS = {build:["build","In build"], live:["live","Live"], planned:["planned","Planned"]};
+
+function renderTiles(){
+  const live = PROJECTS.filter(p=>p.status==="live");
+  const totalMrr = PROJECTS.reduce((s,p)=>s+p.mrr,0);
+  const cust = PROJECTS.reduce((s,p)=>s+p.customers,0);
+  const inBuild = PROJECTS.filter(p=>p.status==="build").length;
+  const tiles = [
+    {k:"Total MRR", v:money(totalMrr)+" <small>/mo</small>"},
+    {k:"Live projects", v:live.length+" <small>of "+PROJECTS.length+"</small>"},
+    {k:"In build", v:inBuild},
+    {k:"Total customers", v:cust}
+  ];
+  document.getElementById("tiles").innerHTML = tiles.map(t=>
+    `<div class="tile"><div class="k">${t.k}</div><div class="v">${t.v}</div></div>`).join("");
+}
+
+function card(p){
+  const [cls,label] = STATUS[p.status];
+  return `<div class="card" onclick='openModal("${p.id}")'>
+    <div class="ctop">
+      <div><div class="cname">${p.name}</div>
+        <div class="platform"><span class="dot"></span>${p.platform}</div></div>
+      <span class="pill ${cls}">${label}</span>
+    </div>
+    <div class="kpis">
+      <div class="kpi"><div class="kk">MRR</div><div class="kv">${money(p.mrr)}</div></div>
+      <div class="kpi"><div class="kk">Customers</div><div class="kv">${p.customers}</div></div>
+      <div class="kpi"><div class="kk">Trials</div><div class="kv">${p.trials}</div></div>
+    </div>
+    <div class="cnote">${p.note}<span class="src">${p.source}</span></div>
+  </div>`;
+}
+
+function renderGrid(){ document.getElementById("grid").innerHTML = PROJECTS.map(card).join(""); }
+
+function openModal(id){
+  const p = PROJECTS.find(x=>x.id===id);
+  const [cls,label] = STATUS[p.status];
+  const rows = Object.entries(p.detail).map(([k,v])=>
+    `<div class="mrow"><span>${k}</span><span>${v}</span></div>`).join("");
+  document.getElementById("modal").innerHTML =
+    `<button class="mclose" onclick="closeModal()">×</button>
+     <h3>${p.name}</h3><div class="mp">${p.platform} &nbsp;·&nbsp; <span class="pill ${cls}">${label}</span></div>
+     <div class="mkpis">
+       <div class="kpi"><div class="kk">MRR</div><div class="kv">${money(p.mrr)}</div></div>
+       <div class="kpi"><div class="kk">Customers</div><div class="kv">${p.customers}</div></div>
+       <div class="kpi"><div class="kk">Trials</div><div class="kv">${p.trials}</div></div>
+     </div>${rows}
+     <div class="cnote" style="margin-top:14px">Data source: <span class="src">${p.source}</span></div>`;
+  document.getElementById("ov").classList.add("show");
+}
+function closeModal(){ document.getElementById("ov").classList.remove("show"); }
+
+document.getElementById("updated").textContent = "Updated " + new Date().toLocaleString();
+document.getElementById("footer").innerHTML =
+  "Sample / early-stage figures — live data wiring (monday subscription webhooks, Stripe, Gumroad) is the next build step. Internal use only.";
+renderTiles(); renderGrid();
+</script>
+</body>
+</html>
