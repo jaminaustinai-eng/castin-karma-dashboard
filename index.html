@@ -12,7 +12,6 @@
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
   a{color:inherit}
-  /* Header */
   header{background:var(--ink);color:#fff;padding:16px 22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
   .brand{display:flex;align-items:center;gap:12px}
   .logo{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#3b6ef5,#6d28d9);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px}
@@ -21,17 +20,14 @@
   .htag{font-size:10px;font-weight:700;letter-spacing:.5px;background:rgba(255,255,255,.12);padding:3px 8px;border-radius:6px;color:#cfd6e2}
   .updated{font-size:11px;color:#9aa6b8}
   .wrap{max-width:1100px;margin:0 auto;padding:22px}
-  /* Summary tiles */
   .tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
   .tile{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
   .tile .k{font-size:11px;color:var(--ink2);font-weight:600;letter-spacing:.3px;text-transform:uppercase}
   .tile .v{font-size:26px;font-weight:800;margin-top:6px}
   .tile .v small{font-size:13px;font-weight:600;color:var(--ink2)}
-  /* Section */
   .secrow{display:flex;align-items:baseline;justify-content:space-between;margin:6px 0 12px}
   .secrow h2{font-size:14px;margin:0;font-weight:700}
   .secrow .hint{font-size:12px;color:var(--ink2)}
-  /* Cards */
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
   .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;cursor:pointer;transition:.15s;position:relative}
   .card:hover{box-shadow:0 8px 24px rgba(15,23,42,.08);transform:translateY(-2px);border-color:#d7dce4}
@@ -42,24 +38,27 @@
   .pill{font-size:10px;font-weight:700;letter-spacing:.3px;padding:4px 9px;border-radius:999px;white-space:nowrap}
   .pill.build{background:#fff7ed;color:var(--amber)}
   .pill.live{background:#ecfdf3;color:var(--green)}
+  .pill.greenlit{background:#e8f7ee;color:#0f8a3d;border:1px solid #bfe8cf}
   .pill.planned{background:#f1f5f9;color:var(--slate)}
   .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
   .kpi{background:#fafbfc;border:1px solid var(--line);border-radius:9px;padding:9px}
   .kpi .kk{font-size:10px;color:var(--ink2);font-weight:600;text-transform:uppercase;letter-spacing:.3px}
-  .kpi .kv{font-size:17px;font-weight:800;margin-top:3px}
+  .kpi .kv{font-size:15px;font-weight:800;margin-top:3px}
   .cnote{font-size:11.5px;color:var(--ink2);margin-top:12px;display:flex;align-items:center;gap:6px}
   .cnote .src{margin-left:auto;font-size:10px;background:#f1f5f9;color:var(--slate);padding:2px 7px;border-radius:5px}
-  /* Modal */
   .ov{position:fixed;inset:0;background:rgba(8,15,30,.55);display:none;align-items:center;justify-content:center;padding:20px;z-index:30}
   .ov.show{display:flex}
-  .modal{background:#fff;border-radius:16px;max-width:520px;width:100%;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+  .modal{background:#fff;border-radius:16px;max-width:540px;width:100%;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.3);max-height:86vh;overflow:auto}
   .modal h3{margin:0;font-size:18px}
   .modal .mp{font-size:12px;color:var(--ink2);margin-top:3px}
   .mclose{float:right;border:none;background:#f1f5f9;width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:16px;color:var(--ink2)}
-  .mkpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}
-  .mrow{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px}
-  .mrow span:first-child{color:var(--ink2)}
-  .mrow span:last-child{font-weight:600}
+  .mkpis{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:16px 0}
+  .mkpi{background:#f0f6ff;border:1px solid #d8e6ff;border-radius:10px;padding:11px}
+  .mkpi .kk{font-size:10px;color:#3b5bdb;font-weight:700;text-transform:uppercase;letter-spacing:.3px}
+  .mkpi .kv{font-size:18px;font-weight:800;margin-top:3px;color:#1e3a8a}
+  .mrow{display:flex;justify-content:space-between;gap:14px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px}
+  .mrow span:first-child{color:var(--ink2);white-space:nowrap}
+  .mrow span:last-child{font-weight:600;text-align:right}
   footer{max-width:1100px;margin:0 auto;padding:8px 22px 30px;color:var(--ink2);font-size:11.5px}
   @media(max-width:760px){.tiles{grid-template-columns:repeat(2,1fr)}}
 </style>
@@ -78,7 +77,7 @@
 
 <div class="wrap">
   <div class="tiles" id="tiles"></div>
-  <div class="secrow"><h2>Projects</h2><span class="hint">Tap a card for details</span></div>
+  <div class="secrow"><h2>Projects</h2><span class="hint">Tap a card for details &amp; MRR forecasts</span></div>
   <div class="grid" id="grid"></div>
 </div>
 
@@ -89,50 +88,98 @@
 </div>
 
 <script>
-// ── DATA ──────────────────────────────────────────────────────────────
-// Early/sample values. Live wiring (monday webhooks, Stripe, etc.) pending.
+// ── DATA (forecasts = mid-case modeled ranges, ±50%; see Discovery Sprint v2 doc) ──
 const PROJECTS = [
   {
     id:"cert", name:"Certification & License Expiry Tracker", platform:"monday.com marketplace",
     status:"build", mrr:0, customers:0, trials:0, source:"monday webhooks (not yet wired)",
-    note:"App #1 — flagship recurring",
+    note:"App #1 — flagship recurring · submission prep",
+    mrr6:"$1–2k", mrr12:"$4–9k",
     detail:{
-      Stage:"MVP built & validated on live monday data; prepping for review/submit",
-      Tests:"25 / 25 passing",
-      Pricing:"Free / $25 / $49 / $99 per month",
+      Stage:"MVP complete & validated live; reminders running; prepping marketplace submission",
+      Pricing:"Free / $19 / $49 / $99 per month",
+      "Market":"250k+ monday customers; regulated-workforce niche",
       "First $ target":"~Aug–Sep 2026",
-      "Year-end target":"~$1–2k/mo",
-      Differentiators:"Bulk session completion · Who's-qualified matrix"
+      "60-day checkpoint":"scale + build COI app, or retire"
+    }
+  },
+  {
+    id:"jobber-rem", name:"Jobber Maintenance-Due Reminders", platform:"Jobber App Marketplace",
+    status:"greenlit", mrr:0, customers:0, trials:0, source:"Stripe (ours) — to be wired",
+    note:"Build #2 — users publicly begging for this for 10 yrs",
+    mrr6:"$1.4–3.2k", mrr12:"$4.5–9k",
+    detail:{
+      Stage:"Green-lit 2026-06-05 — next up after Cert Tracker submits",
+      Pricing:"$29 / $49 / $79 per month by client count (~$45 blended)",
+      "Market":"~250–300k Jobber businesses; ~80–120k repeat-service trades",
+      Edge:"Decade of explicit forum demand; vendor-confirmed gap; makes customers money",
+      "Launch plan":"Email reminders v1 → SMS (Twilio/A2P) v1.1"
+    }
+  },
+  {
+    id:"jobber-comm", name:"Jobber Commission Calculator", platform:"Jobber App Marketplace",
+    status:"greenlit", mrr:0, customers:0, trials:0, source:"Stripe (ours) — to be wired",
+    note:"Build #3 — bundle with Reminders (same buyer & API)",
+    mrr6:"$0.7–1.8k", mrr12:"$2–5k",
+    detail:{
+      Stage:"Green-lit 2026-06-05 — sequenced after Reminders",
+      Pricing:"$19 / $39 / $59 per month by team size (~$35 blended)",
+      "Market":"~30–50k Jobber shops paying performance comp",
+      Edge:"Jobber is hourly-only; shops run disputed spreadsheets every payroll",
+      "Bundle effect":"Pairing with Reminders lifts both ~30%"
+    }
+  },
+  {
+    id:"klaviyo", name:"Klaviyo Billing Guard", platform:"Klaviyo ecosystem (self-distributed)",
+    status:"greenlit", mrr:0, customers:0, trials:0, source:"Stripe (ours) — to be wired",
+    note:"Build #4 — the Billing-Guard thesis beachhead",
+    mrr6:"$1.6–3.2k", mrr12:"$5–10k",
+    detail:{
+      Stage:"Green-lit 2026-06-05 — biggest ceiling; after Jobber pair",
+      Pricing:"$29 / $59 / $99 per month by profile count (~$40 blended) + agency white-label",
+      "Market":"~170k Klaviyo customers; ~60–80k paying $150+/mo",
+      Edge:"Hard-dollar ROI ('saved you $915/mo'); vendor won't fix it",
+      "Expansion":"Same codebase → Shopify, HubSpot, Mailchimp ($15–30k combined potential)"
     }
   },
   {
     id:"coi", name:"COI / Vendor-Document Expiry Tracker", platform:"monday.com marketplace",
     status:"planned", mrr:0, customers:0, trials:0, source:"monday webhooks",
-    note:"App #2 — shares ~70% of code with #1",
-    detail:{Stage:"Planned — fast follow after App #1", Pricing:"~$40–120/mo", "Sherlock risk":"Low"}
+    note:"Shares ~70% of code with Cert Tracker",
+    mrr6:"$1–2k", mrr12:"$4–8k",
+    detail:{
+      Stage:"Planned — triggered by Cert Tracker's 60-day checkpoint",
+      Pricing:"~$40–120/mo",
+      "Market":"Contractors / property managers / field services on monday"
+    }
   },
   {
     id:"templates", name:"Niche Website Template Catalog", platform:"Framer · Webflow · Gumroad",
     status:"planned", mrr:0, customers:0, trials:0, source:"Gumroad / Framer (manual + API)",
     note:"One-time sales — fast cash lever",
-    detail:{Stage:"Candidate — pending green light", Model:"One-time per template ($500–2k lifetime each)"}
+    mrr6:"$0.5–1.5k", mrr12:"$2–3k",
+    detail:{
+      Stage:"Candidate — pending green light",
+      Pricing:"One-time per template ($500–2k lifetime each)",
+      "Market":"Underserved business niches (dental, legal, trades…)"
+    }
   }
 ];
 
 // ── RENDER ────────────────────────────────────────────────────────────
 const money = n => "$"+n.toLocaleString();
-const STATUS = {build:["build","In build"], live:["live","Live"], planned:["planned","Planned"]};
+const STATUS = {build:["build","In build"], live:["live","Live"], greenlit:["greenlit","Green-lit"], planned:["planned","Planned"]};
 
 function renderTiles(){
-  const live = PROJECTS.filter(p=>p.status==="live");
+  const live = PROJECTS.filter(p=>p.status==="live").length;
   const totalMrr = PROJECTS.reduce((s,p)=>s+p.mrr,0);
-  const cust = PROJECTS.reduce((s,p)=>s+p.customers,0);
   const inBuild = PROJECTS.filter(p=>p.status==="build").length;
+  const greenlit = PROJECTS.filter(p=>p.status==="greenlit").length;
   const tiles = [
     {k:"Total MRR", v:money(totalMrr)+" <small>/mo</small>"},
-    {k:"Live projects", v:live.length+" <small>of "+PROJECTS.length+"</small>"},
+    {k:"Live", v:live+" <small>of "+PROJECTS.length+"</small>"},
     {k:"In build", v:inBuild},
-    {k:"Total customers", v:cust}
+    {k:"Green-lit (queued)", v:greenlit}
   ];
   document.getElementById("tiles").innerHTML = tiles.map(t=>
     `<div class="tile"><div class="k">${t.k}</div><div class="v">${t.v}</div></div>`).join("");
@@ -147,9 +194,9 @@ function card(p){
       <span class="pill ${cls}">${label}</span>
     </div>
     <div class="kpis">
-      <div class="kpi"><div class="kk">MRR</div><div class="kv">${money(p.mrr)}</div></div>
-      <div class="kpi"><div class="kk">Customers</div><div class="kv">${p.customers}</div></div>
-      <div class="kpi"><div class="kk">Trials</div><div class="kv">${p.trials}</div></div>
+      <div class="kpi"><div class="kk">MRR now</div><div class="kv">${money(p.mrr)}</div></div>
+      <div class="kpi"><div class="kk">Est. @ 6 mo</div><div class="kv">${p.mrr6}</div></div>
+      <div class="kpi"><div class="kk">Est. @ 1 yr</div><div class="kv">${p.mrr12}</div></div>
     </div>
     <div class="cnote">${p.note}<span class="src">${p.source}</span></div>
   </div>`;
@@ -166,18 +213,19 @@ function openModal(id){
     `<button class="mclose" onclick="closeModal()">×</button>
      <h3>${p.name}</h3><div class="mp">${p.platform} &nbsp;·&nbsp; <span class="pill ${cls}">${label}</span></div>
      <div class="mkpis">
-       <div class="kpi"><div class="kk">MRR</div><div class="kv">${money(p.mrr)}</div></div>
-       <div class="kpi"><div class="kk">Customers</div><div class="kv">${p.customers}</div></div>
-       <div class="kpi"><div class="kk">Trials</div><div class="kv">${p.trials}</div></div>
-     </div>${rows}
-     <div class="cnote" style="margin-top:14px">Data source: <span class="src">${p.source}</span></div>`;
+       <div class="mkpi"><div class="kk">Expected MRR @ 6 months</div><div class="kv">${p.mrr6}/mo</div></div>
+       <div class="mkpi"><div class="kk">Expected MRR @ 1 year</div><div class="kv">${p.mrr12}/mo</div></div>
+     </div>
+     <div class="mrow"><span>MRR today</span><span>${money(p.mrr)} · ${p.customers} customers · ${p.trials} trials</span></div>
+     ${rows}
+     <div class="cnote" style="margin-top:14px">Forecasts are mid-case modeled ranges (±50%), post-launch clock.<span class="src">${p.source}</span></div>`;
   document.getElementById("ov").classList.add("show");
 }
 function closeModal(){ document.getElementById("ov").classList.remove("show"); }
 
 document.getElementById("updated").textContent = "Updated " + new Date().toLocaleString();
 document.getElementById("footer").innerHTML =
-  "Sample / early-stage figures — live data wiring (monday subscription webhooks, Stripe, Gumroad) is the next build step. Internal use only.";
+  "MRR-now figures are placeholders until live data wiring (monday webhooks, Stripe). Forecasts: mid-case modeled ranges from the 2026-06-05 discovery sprint (±50%). Internal use only.";
 renderTiles(); renderGrid();
 </script>
 </body>
