@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Castin Karma — Portfolio Command Center</title>
+<title>Project Tracker — Casting Karma</title>
 <style>
   :root{
     --bg:#f5f6f8; --ink:#0e1726; --ink2:#5b6676; --line:#e6e9ee; --card:#ffffff;
@@ -39,6 +39,7 @@
   .pill.build{background:#fff7ed;color:var(--amber)}
   .pill.live{background:#ecfdf3;color:var(--green)}
   .pill.greenlit{background:#e8f7ee;color:#0f8a3d;border:1px solid #bfe8cf}
+  .pill.review{background:#eef2ff;color:#3b5bdb;border:1px solid #c7d2fe}
   .pill.planned{background:#f1f5f9;color:var(--slate)}
   .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
   .kpi{background:#fafbfc;border:1px solid var(--line);border-radius:9px;padding:9px}
@@ -70,7 +71,7 @@
 <header>
   <div class="brand">
     <div class="logo">CK</div>
-    <div><h1>Portfolio Command Center</h1><div class="sub">Castin Karma LLC</div></div>
+    <div><h1>Project Tracker</h1><div class="sub">Casting Karma LLC</div></div>
   </div>
   <div style="display:flex;align-items:center;gap:12px">
     <span class="htag">PRIVATE</span>
@@ -95,11 +96,11 @@
 const PROJECTS = [
   {
     id:"cert", name:"Certification & License Expiry Tracker", platform:"monday.com marketplace",
-    status:"build", mrr:0, customers:0, trials:0, source:"monday webhooks (not yet wired)",
-    note:"App #1 — flagship recurring · submission prep",
+    status:"review", mrr:0, customers:0, trials:0, source:"monday handles billing",
+    note:"App #1 — SUBMITTED to monday marketplace · in review",
     mrr6:"$1–2k", mrr12:"$4–9k",
     detail:{
-      Stage:"MVP complete & validated live; reminders running; prepping marketplace submission",
+      Stage:"Submitted 2026-06-06; awaiting monday review (~2–4 wks, 1–3 feedback rounds)",
       Pricing:"Free / $19 / $49 / $99 per month",
       "Market":"250k+ monday customers; regulated-workforce niche",
       "First $ target":"~Aug–Sep 2026",
@@ -114,11 +115,11 @@ const PROJECTS = [
   },
   {
     id:"jobber-rem", name:"Jobber Maintenance-Due Reminders", platform:"Jobber App Marketplace",
-    status:"greenlit", mrr:0, customers:0, trials:0, source:"Stripe (ours) — to be wired",
-    note:"Build #2 — users publicly begging for this for 10 yrs",
+    status:"build", mrr:0, customers:0, trials:0, source:"Stripe (ours) — to be wired",
+    note:"Build #2 — IN BUILD · Jobber API de-risked ✅",
     mrr6:"$1.4–3.2k", mrr12:"$4.5–9k",
     detail:{
-      Stage:"Green-lit 2026-06-05 — next up after Cert Tracker submits",
+      Stage:"In build (started 2026-06-06). Jobber API confirmed: visit-history + request-creation. Email-first MVP.",
       Pricing:"$29 / $49 / $79 per month by client count (~$45 blended)",
       "Market":"~250–300k Jobber businesses; ~80–120k repeat-service trades",
       Edge:"Decade of explicit forum demand; vendor-confirmed gap; makes customers money",
@@ -177,16 +178,16 @@ const PROJECTS = [
 
 // ── RENDER ────────────────────────────────────────────────────────────
 const money = n => "$"+n.toLocaleString();
-const STATUS = {build:["build","In build"], live:["live","Live"], greenlit:["greenlit","Green-lit"], planned:["planned","Planned"]};
+const STATUS = {build:["build","In build"], review:["review","In review"], live:["live","Live"], greenlit:["greenlit","Green-lit"], planned:["planned","Planned"]};
 
 function renderTiles(){
-  const live = PROJECTS.filter(p=>p.status==="live").length;
   const totalMrr = PROJECTS.reduce((s,p)=>s+p.mrr,0);
+  const inReview = PROJECTS.filter(p=>p.status==="review").length;
   const inBuild = PROJECTS.filter(p=>p.status==="build").length;
   const greenlit = PROJECTS.filter(p=>p.status==="greenlit").length;
   const tiles = [
     {k:"Total MRR", v:money(totalMrr)+" <small>/mo</small>"},
-    {k:"Live", v:live+" <small>of "+PROJECTS.length+"</small>"},
+    {k:"In review", v:inReview},
     {k:"In build", v:inBuild},
     {k:"Green-lit (queued)", v:greenlit}
   ];
