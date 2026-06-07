@@ -57,6 +57,12 @@
   .mkpi{background:#f0f6ff;border:1px solid #d8e6ff;border-radius:10px;padding:11px}
   .mkpi .kk{font-size:10px;color:#3b5bdb;font-weight:700;text-transform:uppercase;letter-spacing:.3px}
   .mkpi .kv{font-size:18px;font-weight:800;margin-top:3px;color:#1e3a8a}
+  .seclbl{font-size:11px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:#3b5bdb;margin:18px 0 7px}
+  .ftab{width:100%;border-collapse:collapse;font-size:11.5px;margin-top:2px}
+  .ftab th{text-align:left;color:#5b6676;font-weight:700;border-bottom:1px solid #e6e9ef;padding:5px 6px;white-space:nowrap}
+  .ftab td{padding:5px 6px;border-bottom:1px solid #f1f5f9;color:#0e1726}
+  .tierbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+  .tierpill{font-size:11px;font-weight:700;background:#f0f6ff;border:1px solid #d8e6ff;color:#1e3a8a;border-radius:8px;padding:5px 9px}
   .mrow{display:flex;justify-content:space-between;gap:14px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px}
   .mrow span:first-child{color:var(--ink2);white-space:nowrap}
   .mrow span:last-child{font-weight:600;text-align:right}
@@ -98,14 +104,20 @@ const PROJECTS = [
     id:"cert", name:"Certification & License Expiry Tracker", platform:"monday.com marketplace",
     status:"review", mrr:0, customers:0, trials:0, source:"monday handles billing",
     note:"App #1 — SUBMITTED to monday marketplace · in review",
-    mrr6:"$1–2k", mrr12:"$4–9k",
+    mrr6:"$0.3–0.9k", mrr12:"$1.2–3.5k",
     detail:{
       Stage:"Submitted 2026-06-06; awaiting monday review (~2–4 wks, 1–3 feedback rounds)",
-      Pricing:"Free / $19 / $49 / $99 per month",
-      "Market":"250k+ monday customers; regulated-workforce niche",
+      Pricing:"Free 10 ppl / $19·50 / $49·150 / $99·unltd per month",
+      "Reachable market":"~63k monday accounts >10 users (our convert pool); regulated-workforce niche subset",
       "First $ target":"~Aug–Sep 2026",
       "60-day checkpoint":"scale + build COI app, or retire"
     },
+    liveTiers:{ installs:0, free:0, starter:0, growth:0, pro:0, mrr:0 },
+    funnel:[
+      {period:"Month 1–3", installs:"~60", active:"~25", paying:"~3", tiers:"2 / 1 / 0", mrr:"~$90", cash:"~$130"},
+      {period:"Month 4–6", installs:"~200", active:"~80", paying:"~12", tiers:"7 / 4 / 1", mrr:"~$430", cash:"~$750"},
+      {period:"Month 7–12", installs:"~550", active:"~220", paying:"~33", tiers:"18 / 12 / 3", mrr:"~$1.2k", cash:"~$5.0k"}
+    ],
     links:[
       {label:"Open live app (preview)", url:"https://v52a68fa5990c33ce4ca3d8d121f66ba1.cdn2.monday.app"},
       {label:"App on test board (monday)", url:"https://jaminaustinais-team.monday.com/boards/18416264449/views/261984896"},
@@ -228,6 +240,19 @@ function openModal(id){
      </div>
      <div class="mrow"><span>MRR today</span><span>${money(p.mrr)} · ${p.customers} customers · ${p.trials} trials</span></div>
      ${rows}
+     ${p.liveTiers ? `<div class="seclbl">Live — installs &amp; users by tier</div>
+       <div class="mrow"><span>Total installs</span><span>${p.liveTiers.installs} &nbsp;·&nbsp; ${p.status==='review'?'in review (not live)':'live'}</span></div>
+       <div class="tierbar">
+         <span class="tierpill">Free: ${p.liveTiers.free}</span>
+         <span class="tierpill">Starter $19: ${p.liveTiers.starter}</span>
+         <span class="tierpill">Growth $49: ${p.liveTiers.growth}</span>
+         <span class="tierpill">Pro $99: ${p.liveTiers.pro}</span>
+       </div>
+       <div class="mrow" style="margin-top:8px"><span>MRR (live)</span><span>${money(p.liveTiers.mrr)}</span></div>` : ""}
+     ${p.funnel ? `<div class="seclbl">Most-realistic forecast · post-approval clock</div>
+       <table class="ftab"><tr><th>Period</th><th>Installs*</th><th>Active</th><th>Paying (S/G/P)</th><th>MRR (end)</th><th>Cash</th></tr>
+       ${p.funnel.map(f=>`<tr><td>${f.period}</td><td>${f.installs}</td><td>${f.active}</td><td>${f.paying} (${f.tiers})</td><td>${f.mrr}</td><td>${f.cash}</td></tr>`).join("")}</table>
+       <div class="cnote" style="margin-top:8px">*Installs cumulative. Base case; downside ≈ near-zero (discovery fails), upside ≈ 2–3× (reviews + a forum thread land). The 60-day read decides scale-vs-retire.</div>` : ""}
      ${(p.links||[]).map(l=>`<a class="mlink" href="${l.url}" target="_blank" rel="noreferrer">${l.label} ↗</a>`).join("")}
      <div class="cnote" style="margin-top:14px">Forecasts are mid-case modeled ranges (±50%), post-launch clock.<span class="src">${p.source}</span></div>`;
   document.getElementById("ov").classList.add("show");
