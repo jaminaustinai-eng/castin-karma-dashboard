@@ -38,6 +38,8 @@
   .cinitial{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:17px}
   .cname{font-size:15px;font-weight:700;line-height:1.25}
   .platform{font-size:11px;color:var(--ink2);margin-top:3px;display:flex;align-items:center;gap:6px}
+  .wsite{display:inline-block;margin-top:6px;font-size:11.5px;color:var(--blue);text-decoration:none;font-weight:700}
+  .wsite:hover{text-decoration:underline}
   .dot{width:6px;height:6px;border-radius:50%;background:var(--blue);display:inline-block}
   .pill{font-size:10px;font-weight:700;letter-spacing:.3px;padding:4px 9px;border-radius:999px;white-space:nowrap}
   .pill.build{background:#fff7ed;color:var(--amber)}
@@ -81,7 +83,7 @@
 <header>
   <div class="brand">
     <div class="logo">CK</div>
-    <div><h1>Project Tracker</h1><div class="sub">Casting Karma LLC</div></div>
+    <div><h1>Project Tracker</h1><div class="sub">Casting Karma LLC · <a href="https://castingkarmallc.com" target="_blank" rel="noreferrer" style="color:#9fb4ff;text-decoration:none">castingkarmallc.com ↗</a></div></div>
   </div>
   <div style="display:flex;align-items:center;gap:12px">
     <span class="htag">PRIVATE</span>
@@ -133,6 +135,7 @@ const PROJECTS = [
     id:"jobber-rem", name:"DueBell — Service Reminders", platform:"Jobber App Marketplace",
     icon:`<svg viewBox="0 0 384 384" width="40" height="40" aria-hidden="true"><rect width="384" height="384" rx="84" fill="#d98a1f"/><path d="M251.2 73.1A140 140 0 1 1 132.8 73.1" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="18" stroke-linecap="round"/><polygon points="152.7,63.8 132.9,87.4 121.9,63.8" fill="#fff" fill-opacity=".5"/><g fill="#fff"><circle cx="192" cy="120" r="13"/><path d="M192 132C156 132 150 166 150 196 150 222 143 238 132 248L252 248C241 238 234 222 234 196 234 166 228 132 192 132Z"/><circle cx="192" cy="266" r="14"/></g></svg>`,
     status:"build", mrr:0, customers:0, trials:0, source:"Stripe (ours) — to be wired",
+    website:"https://getduebell.com",
     note:"Build #2 — IN BUILD · brand + backend done · API de-risked ✅",
     mrr6:"$1.4–3.2k", mrr12:"$4.5–9k",
     detail:{
@@ -226,7 +229,8 @@ function card(p){
       <div class="chead">
         <div class="cicon">${iconHtml(p)}</div>
         <div><div class="cname">${p.name}</div>
-          <div class="platform"><span class="dot"></span>${p.platform}</div></div>
+          <div class="platform"><span class="dot"></span>${p.platform}</div>
+          ${p.website?`<a class="wsite" href="${p.website}" target="_blank" rel="noreferrer" onclick="event.stopPropagation()">🌐 ${p.website.replace(/^https?:\/\//,'')} ↗</a>`:""}</div>
       </div>
       <span class="pill ${cls}">${label}</span>
     </div>
@@ -250,7 +254,7 @@ function openModal(id){
     `<button class="mclose" onclick="closeModal()">×</button>
      <div style="display:flex;gap:12px;align-items:center">
        <div class="cicon">${iconHtml(p)}</div>
-       <div><h3>${p.name}</h3><div class="mp">${p.platform} &nbsp;·&nbsp; <span class="pill ${cls}">${label}</span></div></div>
+       <div><h3>${p.name}</h3><div class="mp">${p.platform} &nbsp;·&nbsp; <span class="pill ${cls}">${label}</span>${p.website?` &nbsp;·&nbsp; <a href="${p.website}" target="_blank" rel="noreferrer" class="linkchip">🌐 ${p.website.replace(/^https?:\/\//,'')} ↗</a>`:""}</div></div>
      </div>
      <div class="mkpis">
        <div class="mkpi"><div class="kk">Expected MRR @ 6 months</div><div class="kv">${p.mrr6}/mo</div></div>
