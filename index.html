@@ -20,14 +20,17 @@
   .htag{font-size:10px;font-weight:700;letter-spacing:.5px;background:rgba(255,255,255,.12);padding:3px 8px;border-radius:6px;color:#cfd6e2}
   .updated{font-size:11px;color:#9aa6b8}
   .wrap{max-width:1100px;margin:0 auto;padding:22px}
-  .tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+  .tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
   .tile{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
   .tile .k{font-size:11px;color:var(--ink2);font-weight:600;letter-spacing:.3px;text-transform:uppercase}
   .tile .v{font-size:26px;font-weight:800;margin-top:6px}
   .tile .v small{font-size:13px;font-weight:600;color:var(--ink2)}
-  .secrow{display:flex;align-items:baseline;justify-content:space-between;margin:6px 0 12px}
-  .secrow h2{font-size:14px;margin:0;font-weight:700}
-  .secrow .hint{font-size:12px;color:var(--ink2)}
+  .tabs{display:flex;gap:8px;margin:4px 0 16px;border-bottom:1px solid var(--line)}
+  .tab{appearance:none;border:none;background:none;cursor:pointer;font-family:inherit;font-size:13.5px;font-weight:700;color:var(--ink2);padding:10px 4px;margin-right:14px;border-bottom:2.5px solid transparent;display:flex;align-items:center;gap:7px}
+  .tab .cnt{font-size:11px;font-weight:800;background:#eef1f5;color:var(--ink2);border-radius:999px;padding:1px 8px}
+  .tab.active{color:var(--ink);border-bottom-color:var(--blue)}
+  .tab.active .cnt{background:#e6efff;color:var(--blue)}
+  .tabhint{font-size:12px;color:var(--ink2);margin:-6px 0 14px}
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
   .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;cursor:pointer;transition:.15s;position:relative}
   .card:hover{box-shadow:0 8px 24px rgba(15,23,42,.08);transform:translateY(-2px);border-color:#d7dce4}
@@ -46,6 +49,7 @@
   .pill.live{background:#ecfdf3;color:var(--green)}
   .pill.greenlit{background:#e8f7ee;color:#0f8a3d;border:1px solid #bfe8cf}
   .pill.review{background:#eef2ff;color:#3b5bdb;border:1px solid #c7d2fe}
+  .pill.possible{background:#f5f0ff;color:#6d28d9;border:1px solid #ddd0fb}
   .pill.planned{background:#f1f5f9;color:var(--slate)}
   .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
   .kpi{background:#fafbfc;border:1px solid var(--line);border-radius:9px;padding:9px}
@@ -93,7 +97,8 @@
 
 <div class="wrap">
   <div class="tiles" id="tiles"></div>
-  <div class="secrow"><h2>Projects</h2><span class="hint">Tap a card for details &amp; MRR forecasts</span></div>
+  <div class="tabs" id="tabs"></div>
+  <div class="tabhint" id="tabhint"></div>
   <div class="grid" id="grid"></div>
 </div>
 
@@ -104,17 +109,21 @@
 </div>
 
 <script>
-// ── DATA (forecasts = mid-case modeled ranges, ±50%; see Discovery Sprint v2 doc) ──
+// ── DATA ──────────────────────────────────────────────────────────────
+// group: "active" = in build/review · "possible" = researched, not green-lit
+// kpis: 3 card metrics · modalKpis: 2 top boxes in detail view
 const PROJECTS = [
+  // ───────────── ACTIVE BUILDS ─────────────
   {
-    id:"cert", name:"Certification & License Expiry Tracker", platform:"monday.com marketplace",
+    id:"cert", group:"active", name:"Certification & License Expiry Tracker", platform:"monday.com marketplace",
     status:"review", mrr:0, customers:0, trials:0, source:"monday handles billing",
     note:"App #1 — SUBMITTED to monday marketplace · in review",
-    mrr6:"$0.3–0.9k", mrr12:"$1.2–3.5k",
+    kpis:[{k:"MRR now",v:"$0"},{k:"Est. @ 6 mo",v:"$0.3–0.9k"},{k:"Est. @ 1 yr",v:"$1.2–3.5k"}],
+    modalKpis:[{k:"Expected MRR @ 6 months",v:"$0.3–0.9k/mo"},{k:"Expected MRR @ 1 year",v:"$1.2–3.5k/mo"}],
     detail:{
       Stage:"Submitted 2026-06-06; awaiting monday review (~2–4 wks, 1–3 feedback rounds)",
       Pricing:"Free 10 ppl / $19·50 / $49·150 / $99·unltd per month",
-      "Reachable market":"~63k monday accounts >10 users (our convert pool); regulated-workforce niche subset",
+      "Reachable market":"~63k monday accounts >10 users; regulated-workforce niche subset",
       "First $ target":"~Aug–Sep 2026",
       "60-day checkpoint":"scale + build COI app, or retire"
     },
@@ -132,98 +141,177 @@ const PROJECTS = [
     ]
   },
   {
-    id:"jobber-rem", name:"DueBell — Service Reminders", platform:"Jobber App Marketplace",
+    id:"jobber-rem", group:"active", name:"DueBell — Service Reminders", platform:"Jobber App Marketplace",
     icon:`<svg viewBox="0 0 384 384" width="40" height="40" aria-hidden="true"><rect width="384" height="384" rx="84" fill="#d98a1f"/><path d="M251.2 73.1A140 140 0 1 1 132.8 73.1" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="18" stroke-linecap="round"/><polygon points="152.7,63.8 132.9,87.4 121.9,63.8" fill="#fff" fill-opacity=".5"/><g fill="#fff"><circle cx="192" cy="120" r="13"/><path d="M192 132C156 132 150 166 150 196 150 222 143 238 132 248L252 248C241 238 234 222 234 196 234 166 228 132 192 132Z"/><circle cx="192" cy="266" r="14"/></g></svg>`,
     status:"build", mrr:0, customers:0, trials:0, source:"Stripe (ours) — to be wired",
     website:"https://getduebell.com",
     note:"Build #2 — IN BUILD · brand + backend done · API de-risked ✅",
-    mrr6:"$1.4–3.2k", mrr12:"$4.5–9k",
+    kpis:[{k:"MRR now",v:"$0"},{k:"Est. @ 6 mo",v:"$1.4–3.2k"},{k:"Est. @ 1 yr",v:"$4.5–9k"}],
+    modalKpis:[{k:"Expected MRR @ 6 months",v:"$1.4–3.2k/mo"},{k:"Expected MRR @ 1 year",v:"$4.5–9k/mo"}],
     detail:{
       Stage:"In build (started 2026-06-06). Jobber API confirmed: visit-history + request-creation. Email-first MVP.",
       Pricing:"$29 / $49 / $79 per month by client count (~$45 blended)",
       "Market":"~250–300k Jobber businesses; ~80–120k repeat-service trades",
       Edge:"Decade of explicit forum demand; vendor-confirmed gap; makes customers money",
-      "Launch plan":"Email reminders v1 → SMS (Twilio/A2P) v1.1"
+      "Next":"deploy backend → Stripe → Jobber marketplace submission → first paying customer"
+    }
+  },
+
+  // ───────────── POSSIBLE PROJECTS (researched, not green-lit) ─────────────
+  {
+    id:"jobber-comm", group:"possible", name:"Jobber Commission Calculator", platform:"Jobber App Marketplace",
+    status:"possible", mrr:0, customers:0, trials:0, source:"Prepped · brief written",
+    note:"Was green-lit #3 → moved to Possible 2026-06-09",
+    kpis:[{k:"Est. @ 6 mo",v:"$0.5–1.4k"},{k:"Est. @ 1 yr",v:"$1.4–3.5k"},{k:"Grade",v:"B"}],
+    modalKpis:[{k:"Honest ceiling @ 1 yr",v:"$1.4–3.5k/mo"},{k:"Build cost",v:"Low (reuses DueBell)"}],
+    detail:{
+      What:"Commission/performance-pay statements for small Jobber service shops (% of revenue/GP, tiers, splits)",
+      "Demand":"Real — Jobber is hourly-only; Gusto integration can't do commission",
+      "⚠ Risk":"Protiv is a funded incumbent already on the Jobber marketplace (~$10/worker/mo)",
+      Wedge:"Cheaper/simpler sales-commission for small shops Protiv serves poorly",
+      Verdict:"Cheap to attempt (shared stack) — pursue only via a sharp wedge + validation gate"
+    },
+    links:[{label:"Prep & Brief doc", url:"https://github.com/jaminaustinai-eng"}]
+  },
+  {
+    id:"klaviyo", group:"possible", name:"Klaviyo Billing Guard", platform:"Klaviyo (self-distributed)",
+    status:"possible", mrr:0, customers:0, trials:0, source:"Prepped · brief written",
+    note:"Was green-lit #4 → moved to Possible 2026-06-09",
+    kpis:[{k:"Est. @ 6 mo",v:"$0.9–2.5k"},{k:"Est. @ 1 yr",v:"$2.5–7k"},{k:"Ceiling",v:"High"}],
+    modalKpis:[{k:"Ceiling @ 1 yr",v:"$2.5–7k/mo"},{k:"Distribution fit",v:"Worst (adversarial)"}],
+    detail:{
+      What:"Auto-suppress billable-but-worthless Klaviyo profiles to cut the bill; '$ saved' dashboard",
+      "Demand":"Strongest — 193k customers, $-denominated ROI, loud 2025 repricing anger",
+      "⚠ Risk":"Adversarial platform (Klaviyo profits from the waste); NO marketplace funnel; Klaviyo ships free native cleanup",
+      Verdict:"Biggest ceiling, hardest distribution — a deliberate later bet, after a marketplace win + agency validation"
     }
   },
   {
-    id:"jobber-comm", name:"Jobber Commission Calculator", platform:"Jobber App Marketplace",
-    status:"greenlit", mrr:0, customers:0, trials:0, source:"Stripe (ours) — to be wired",
-    note:"Build #3 — bundle with Reminders (same buyer & API)",
-    mrr6:"$0.7–1.8k", mrr12:"$2–5k",
+    id:"whop", group:"possible", name:"Whop App — creator-community tool", platform:"Whop App Store",
+    status:"possible", mrr:0, customers:0, trials:0, source:"Discovery v3 · score 4.4",
+    note:"⭐ Boldest emerging bet — young store, native recurring billing",
+    kpis:[{k:"Fit",v:"4.4/5"},{k:"Distribution",v:"5/5"},{k:"Demand",v:"4/5"}],
+    modalKpis:[{k:"Overall fit",v:"4.4 / 5"},{k:"Platform maturity",v:"New (Sept 2025)"}],
     detail:{
-      Stage:"Green-lit 2026-06-05 — sequenced after Reminders",
-      Pricing:"$19 / $39 / $59 per month by team size (~$35 blended)",
-      "Market":"~30–50k Jobber shops paying performance comp",
-      Edge:"Jobber is hourly-only; shops run disputed spreadsheets every payroll",
-      "Bundle effect":"Pairing with Reminders lifts both ~30%"
+      What:"A vertical recurring tool installed inside paying creator communities (trading/fitness/coaching)",
+      "Distribution":"Land 1 creator → inherit their member base; install-ranking flywheel; store only ~39 live apps",
+      "Demand":"Whop ~$142M annualized rev (+255%); SDK handles subscriptions/dunning/payouts",
+      Pricing:"~$1/member/mo or 10–30% rev-share",
+      "⚠ Risk":"Earnings top-heavy (~9/10 products earn $0) — target top-decile creators only"
     }
   },
   {
-    id:"klaviyo", name:"Klaviyo Billing Guard", platform:"Klaviyo ecosystem (self-distributed)",
-    status:"greenlit", mrr:0, customers:0, trials:0, source:"Stripe (ours) — to be wired",
-    note:"Build #4 — the Billing-Guard thesis beachhead",
-    mrr6:"$1.6–3.2k", mrr12:"$5–10k",
+    id:"ghl-field", group:"possible", name:"GHL Field-Service app (Jobber-lite)", platform:"GoHighLevel Marketplace",
+    status:"possible", mrr:0, customers:0, trials:0, source:"Discovery v3 · score 4.2",
+    note:"Loudest marketplace plea found (145 votes, 'I PROMISE IF YOU DO THIS')",
+    kpis:[{k:"Fit",v:"4.2/5"},{k:"Distribution",v:"5/5"},{k:"Demand",v:"5/5"}],
+    modalKpis:[{k:"Overall fit",v:"4.2 / 5"},{k:"Platform",v:"GHL · 60k agencies"}],
     detail:{
-      Stage:"Green-lit 2026-06-05 — biggest ceiling; after Jobber pair",
-      Pricing:"$29 / $59 / $99 per month by profile count (~$40 blended) + agency white-label",
-      "Market":"~170k Klaviyo customers; ~60–80k paying $150+/mo",
-      Edge:"Hard-dollar ROI ('saved you $915/mo'); vendor won't fix it",
-      "Expansion":"Same codebase → Shopify, HubSpot, Mailchimp ($15–30k combined potential)"
+      What:"GHL-native scheduling/dispatch + tech GPS + on-my-way SMS + before/after photos + job invoicing",
+      "Distribution":"GHL marketplace; agencies auto-bundle across all sub-accounts (1 sale → dozens of seats)",
+      "Demand":"145-vote request thread = warm lead list; native recurring billing",
+      Pricing:"$29–79/mo per sub-account, agency-rebilled",
+      "⚠ Risk":"Contested (FieldTask) + GHL could build it — win on trades depth + customer-facing UX"
     }
   },
   {
-    id:"coi", name:"COI / Vendor-Document Expiry Tracker", platform:"monday.com marketplace",
-    status:"planned", mrr:0, customers:0, trials:0, source:"monday webhooks",
-    note:"Shares ~70% of code with Cert Tracker",
-    mrr6:"$1–2k", mrr12:"$4–8k",
+    id:"feedguard", group:"possible", name:"FeedGuard — Merchant Center watchdog", platform:"Shopify + Google API",
+    status:"possible", mrr:0, customers:0, trials:0, source:"Discovery v3 · score 4.2",
+    note:"Friendliest platform fit — self-running watchdog, clean SMB wedge",
+    kpis:[{k:"Fit",v:"4.2/5"},{k:"Distribution",v:"4/5"},{k:"Margin",v:"5/5"}],
+    modalKpis:[{k:"Overall fit",v:"4.2 / 5"},{k:"Platform",v:"Friendly (Google/Shopify)"}],
     detail:{
-      Stage:"Planned — triggered by Cert Tracker's 60-day checkpoint",
+      What:"Watches Google Merchant Center daily; instant alert on product disapprovals / feed drops + the reason + SKUs",
+      "Distribution":"Shopify App Store + SEO + PPC-freelancer community (they hand-roll Ads Scripts today)",
+      "Demand":"'Thousands in lost revenue/day' from disapproved hero SKUs; DIY scripts prove the gap",
+      Pricing:"$19–49/mo SMB; $99+/mo agency",
+      "⚠ Risk":"Native GMC alerts (noisy) + enterprise incumbents (Feedonomics) — wedge is the cheap SMB low end"
+    }
+  },
+  {
+    id:"cleanbooks", group:"possible", name:"CleanBooks — HCP ↔ QuickBooks repair", platform:"Housecall Pro + QuickBooks",
+    status:"possible", mrr:0, customers:0, trials:0, source:"Discovery v3 · score 4.0",
+    note:"Strongest demand quotes ('accountants want to scream')",
+    kpis:[{k:"Fit",v:"4.0/5"},{k:"Demand",v:"5/5"},{k:"Originality",v:"4/5"}],
+    modalKpis:[{k:"Overall fit",v:"4.0 / 5"},{k:"Incumbent",v:"None (manual bookkeeping)"}],
+    detail:{
+      What:"De-dupes/reconciles the messy HCP→QuickBooks sync + generates clean customer statements HCP can't",
+      "Distribution":"QuickBooks App Store + bookkeeper referral loop; engine resells to Jobber/ServiceTitan later",
+      "Demand":"Visceral, present-tense pain quotes; owners pay bookkeepers $200–800/mo partly for this",
+      Pricing:"$49–99/mo",
+      "⚠ Risk":"HCP's own store is curated (no self-serve) — distribute via QBO + accountants"
+    }
+  },
+  {
+    id:"listinglock", group:"possible", name:"ListingLock — Google Business watchdog", platform:"Google Business Profile API",
+    status:"possible", mrr:0, customers:0, trials:0, source:"Discovery v3 · score 4.0",
+    note:"Agency multiplier — 1 agency = dozens of monitored locations",
+    kpis:[{k:"Fit",v:"4.0/5"},{k:"Distribution",v:"4/5"},{k:"Margin",v:"5/5"}],
+    modalKpis:[{k:"Overall fit",v:"4.0 / 5"},{k:"Platform",v:"Friendly (official webhook)"}],
+    detail:{
+      What:"Snapshots each Google Business Profile; instant alert on any change (hours/phone/address/'permanently closed')",
+      "Distribution":"Sell to local-SEO agencies (multi-tenant) + SEO; fast path to 1,000 monitored profiles",
+      "Demand":"Anyone can 'suggest an edit' & Google auto-accepts; a fake 'closed' kills client lead-flow",
+      Pricing:"$2–5/location/mo or $49–149/mo agency",
+      "⚠ Risk":"Incumbents (Local Falcon, BrightLocal) — win on cheap alert-first UX + agency relationships"
+    }
+  },
+  {
+    id:"coi", group:"possible", name:"COI / Vendor-Document Expiry Tracker", platform:"monday.com marketplace",
+    status:"possible", mrr:0, customers:0, trials:0, source:"Parked · shares ~70% Cert code",
+    note:"Fast-follow to Cert Tracker (triggered by its 60-day checkpoint)",
+    kpis:[{k:"Est. @ 6 mo",v:"$1–2k"},{k:"Est. @ 1 yr",v:"$4–8k"},{k:"Build",v:"Low"}],
+    modalKpis:[{k:"Expected MRR @ 6 months",v:"$1–2k/mo"},{k:"Expected MRR @ 1 year",v:"$4–8k/mo"}],
+    detail:{
+      What:"Certificate-of-insurance / vendor-document expiry tracking on monday",
+      "Market":"Contractors / property managers / field services on monday",
       Pricing:"~$40–120/mo",
-      "Market":"Contractors / property managers / field services on monday"
-    }
-  },
-  {
-    id:"templates", name:"Niche Website Template Catalog", platform:"Framer · Webflow · Gumroad",
-    status:"planned", mrr:0, customers:0, trials:0, source:"Gumroad / Framer (manual + API)",
-    note:"One-time sales — fast cash lever",
-    mrr6:"$0.5–1.5k", mrr12:"$2–3k",
-    detail:{
-      Stage:"Candidate — pending green light",
-      Pricing:"One-time per template ($500–2k lifetime each)",
-      "Market":"Underserved business niches (dental, legal, trades…)"
+      Verdict:"Reuses ~70% of Cert Tracker; ship if Cert's 60-day read says scale"
     }
   }
 ];
 
 // ── RENDER ────────────────────────────────────────────────────────────
 const money = n => "$"+n.toLocaleString();
+let TAB = "active";
 function iconHtml(p){
   if(p.icon) return p.icon;
-  const colors={build:"#d97706",review:"#3b5bdb",live:"#16a34a",greenlit:"#0f8a3d",planned:"#64748b"};
+  const colors={build:"#d97706",review:"#3b5bdb",live:"#16a34a",greenlit:"#0f8a3d",possible:"#6d28d9",planned:"#64748b"};
   const c = colors[p.status] || "#64748b";
   const ch = (p.name||"?").replace(/[^A-Za-z0-9]/,"").charAt(0).toUpperCase();
   return `<div class="cinitial" style="background:${c}">${ch}</div>`;
 }
-const STATUS = {build:["build","In build"], review:["review","In review"], live:["live","Live"], greenlit:["greenlit","Green-lit"], planned:["planned","Planned"]};
+const STATUS = {build:["build","In build"], review:["review","In review"], live:["live","Live"], greenlit:["greenlit","Green-lit"], possible:["possible","Possible"], planned:["planned","Planned"]};
 
 function renderTiles(){
-  const totalMrr = PROJECTS.reduce((s,p)=>s+p.mrr,0);
   const inReview = PROJECTS.filter(p=>p.status==="review").length;
   const inBuild = PROJECTS.filter(p=>p.status==="build").length;
-  const greenlit = PROJECTS.filter(p=>p.status==="greenlit").length;
+  const possible = PROJECTS.filter(p=>p.group==="possible").length;
   const tiles = [
-    {k:"Total MRR", v:money(totalMrr)+" <small>/mo</small>"},
+    {k:"Total MRR", v:money(0)+" <small>/mo</small>"},
     {k:"In review", v:inReview},
     {k:"In build", v:inBuild},
-    {k:"Green-lit (queued)", v:greenlit}
+    {k:"Possible projects", v:possible}
   ];
   document.getElementById("tiles").innerHTML = tiles.map(t=>
     `<div class="tile"><div class="k">${t.k}</div><div class="v">${t.v}</div></div>`).join("");
 }
 
+function renderTabs(){
+  const nActive = PROJECTS.filter(p=>p.group==="active").length;
+  const nPoss = PROJECTS.filter(p=>p.group==="possible").length;
+  document.getElementById("tabs").innerHTML =
+    `<button class="tab ${TAB==='active'?'active':''}" onclick="setTab('active')">Active Builds <span class="cnt">${nActive}</span></button>
+     <button class="tab ${TAB==='possible'?'active':''}" onclick="setTab('possible')">Possible Projects <span class="cnt">${nPoss}</span></button>`;
+  document.getElementById("tabhint").textContent = TAB==="active"
+    ? "Projects in active build or marketplace review. Tap a card for details & MRR forecasts."
+    : "Researched & scored, not green-lit. Tap a card for the wedge, demand, and risk. Nothing here is committed.";
+}
+function setTab(t){ TAB=t; renderTabs(); renderGrid(); }
+
 function card(p){
   const [cls,label] = STATUS[p.status];
+  const kpis = (p.kpis||[]).map(x=>`<div class="kpi"><div class="kk">${x.k}</div><div class="kv">${x.v}</div></div>`).join("");
   return `<div class="card" onclick='openModal("${p.id}")'>
     <div class="ctop">
       <div class="chead">
@@ -234,32 +322,28 @@ function card(p){
       </div>
       <span class="pill ${cls}">${label}</span>
     </div>
-    <div class="kpis">
-      <div class="kpi"><div class="kk">MRR now</div><div class="kv">${money(p.mrr)}</div></div>
-      <div class="kpi"><div class="kk">Est. @ 6 mo</div><div class="kv">${p.mrr6}</div></div>
-      <div class="kpi"><div class="kk">Est. @ 1 yr</div><div class="kv">${p.mrr12}</div></div>
-    </div>
-    <div class="cnote">${p.note}${p.links?` <span class="linkchip">· 🔗 ${p.links.length} live links</span>`:""}<span class="src">${p.source}</span></div>
+    <div class="kpis">${kpis}</div>
+    <div class="cnote">${p.note}${p.links?` <span class="linkchip">· 🔗 ${p.links.length}</span>`:""}<span class="src">${p.source}</span></div>
   </div>`;
 }
 
-function renderGrid(){ document.getElementById("grid").innerHTML = PROJECTS.map(card).join(""); }
+function renderGrid(){
+  document.getElementById("grid").innerHTML = PROJECTS.filter(p=>p.group===TAB).map(card).join("");
+}
 
 function openModal(id){
   const p = PROJECTS.find(x=>x.id===id);
   const [cls,label] = STATUS[p.status];
   const rows = Object.entries(p.detail).map(([k,v])=>
     `<div class="mrow"><span>${k}</span><span>${v}</span></div>`).join("");
+  const mk = (p.modalKpis||[]).map(x=>`<div class="mkpi"><div class="kk">${x.k}</div><div class="kv">${x.v}</div></div>`).join("");
   document.getElementById("modal").innerHTML =
     `<button class="mclose" onclick="closeModal()">×</button>
      <div style="display:flex;gap:12px;align-items:center">
        <div class="cicon">${iconHtml(p)}</div>
        <div><h3>${p.name}</h3><div class="mp">${p.platform} &nbsp;·&nbsp; <span class="pill ${cls}">${label}</span>${p.website?` &nbsp;·&nbsp; <a href="${p.website}" target="_blank" rel="noreferrer" class="linkchip">🌐 ${p.website.replace(/^https?:\/\//,'')} ↗</a>`:""}</div></div>
      </div>
-     <div class="mkpis">
-       <div class="mkpi"><div class="kk">Expected MRR @ 6 months</div><div class="kv">${p.mrr6}/mo</div></div>
-       <div class="mkpi"><div class="kk">Expected MRR @ 1 year</div><div class="kv">${p.mrr12}/mo</div></div>
-     </div>
+     ${mk?`<div class="mkpis">${mk}</div>`:""}
      <div class="mrow"><span>MRR today</span><span>${money(p.mrr)} · ${p.customers} customers · ${p.trials} trials</span></div>
      ${rows}
      ${p.liveTiers ? `<div class="seclbl">Live — installs &amp; users by tier</div>
@@ -274,17 +358,17 @@ function openModal(id){
      ${p.funnel ? `<div class="seclbl">Most-realistic forecast · post-approval clock</div>
        <table class="ftab"><tr><th>Period</th><th>Installs*</th><th>Active</th><th>Paying (S/G/P)</th><th>MRR (end)</th><th>Cash</th></tr>
        ${p.funnel.map(f=>`<tr><td>${f.period}</td><td>${f.installs}</td><td>${f.active}</td><td>${f.paying} (${f.tiers})</td><td>${f.mrr}</td><td>${f.cash}</td></tr>`).join("")}</table>
-       <div class="cnote" style="margin-top:8px">*Installs cumulative. Base case; downside ≈ near-zero (discovery fails), upside ≈ 2–3× (reviews + a forum thread land). The 60-day read decides scale-vs-retire.</div>` : ""}
+       <div class="cnote" style="margin-top:8px">*Installs cumulative. Base case; downside ≈ near-zero (discovery fails), upside ≈ 2–3× (reviews + a forum thread land).</div>` : ""}
      ${(p.links||[]).map(l=>`<a class="mlink" href="${l.url}" target="_blank" rel="noreferrer">${l.label} ↗</a>`).join("")}
-     <div class="cnote" style="margin-top:14px">Forecasts are mid-case modeled ranges (±50%), post-launch clock.<span class="src">${p.source}</span></div>`;
+     <div class="cnote" style="margin-top:14px">${p.group==='possible'?'Possible project — researched, not committed. Scores from Discovery Sprint v3 (·/5).':'Forecasts are mid-case modeled ranges (±50%), post-launch clock.'}<span class="src">${p.source}</span></div>`;
   document.getElementById("ov").classList.add("show");
 }
 function closeModal(){ document.getElementById("ov").classList.remove("show"); }
 
 document.getElementById("updated").textContent = "Updated " + new Date().toLocaleString();
 document.getElementById("footer").innerHTML =
-  "MRR-now figures are placeholders until live data wiring (monday webhooks, Stripe). Forecasts: mid-case modeled ranges from the 2026-06-05 discovery sprint (±50%). Internal use only.";
-renderTiles(); renderGrid();
+  "Active builds = monday Cert Tracker (in review) + DueBell (in build). Possible Projects = researched & scored, not green-lit (Discovery Sprint v3, 2026-06-09). MRR-now figures are placeholders until live-data wiring. Internal use only.";
+renderTiles(); renderTabs(); renderGrid();
 </script>
 </body>
 </html>
