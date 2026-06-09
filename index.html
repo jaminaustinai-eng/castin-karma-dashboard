@@ -405,7 +405,7 @@ function openModal(id){
        <table class="ftab"><tr><th>Period</th><th>Installs*</th><th>Active</th><th>Paying (S/G/P)</th><th>MRR (end)</th><th>Cash</th></tr>
        ${p.funnel.map(f=>`<tr><td>${f.period}</td><td>${f.installs}</td><td>${f.active}</td><td>${f.paying} (${f.tiers})</td><td>${f.mrr}</td><td>${f.cash}</td></tr>`).join("")}</table>` : ""}
      ${(p.links||[]).map(l=>`<a class="mlink" href="${l.url}" target="_blank" rel="noreferrer">${l.label} ↗</a>`).join("")}
-     <div class="cnote" style="margin-top:14px">${p.group==='possible'?'Possible project — researched, not committed. Revenue = mid-case modeled range (±50%); Potential = Claude\\'s overall rating /5.':'Forecasts are mid-case modeled ranges (±50%), post-launch clock.'}<span class="src">${p.source}</span></div>`;
+     <div class="cnote" style="margin-top:14px">${p.group==='possible'?'Possible project — researched, not committed. Revenue = mid-case modeled range (±50%); Potential = my overall rating, out of 5.':'Forecasts are mid-case modeled ranges (±50%), post-launch clock.'}<span class="src">${p.source}</span></div>`;
   document.getElementById("ov").classList.add("show");
 }
 function closeModal(){ document.getElementById("ov").classList.remove("show"); }
