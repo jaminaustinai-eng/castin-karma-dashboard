@@ -40,6 +40,7 @@
   .cicon svg{display:block;width:40px;height:40px}
   .cinitial{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:17px}
   .cname{font-size:15px;font-weight:700;line-height:1.25}
+  .rankbadge{display:inline-flex;align-items:center;justify-content:center;min-width:21px;height:20px;padding:0 6px;border-radius:6px;background:#eef2ff;color:#3b5bdb;font-size:11px;font-weight:800;margin-right:7px;vertical-align:2px}
   .platform{font-size:11px;color:var(--ink2);margin-top:3px;display:flex;align-items:center;gap:6px}
   .wsite{display:inline-block;margin-top:6px;font-size:11.5px;color:var(--blue);text-decoration:none;font-weight:700}
   .wsite:hover{text-decoration:underline}
@@ -53,28 +54,34 @@
   .pill.planned{background:#f1f5f9;color:var(--slate)}
   .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
   .kpi{background:#fafbfc;border:1px solid var(--line);border-radius:9px;padding:9px}
+  .kpi.pot{background:#f3f0ff;border-color:#e2d9fb}
   .kpi .kk{font-size:10px;color:var(--ink2);font-weight:600;text-transform:uppercase;letter-spacing:.3px}
+  .kpi.pot .kk{color:#6d28d9}
   .kpi .kv{font-size:15px;font-weight:800;margin-top:3px}
+  .kpi.pot .kv{color:#6d28d9}
   .cnote{font-size:11.5px;color:var(--ink2);margin-top:12px;display:flex;align-items:center;gap:6px}
   .cnote .src{margin-left:auto;font-size:10px;background:#f1f5f9;color:var(--slate);padding:2px 7px;border-radius:5px}
   .ov{position:fixed;inset:0;background:rgba(8,15,30,.55);display:none;align-items:center;justify-content:center;padding:20px;z-index:30}
   .ov.show{display:flex}
-  .modal{background:#fff;border-radius:16px;max-width:540px;width:100%;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.3);max-height:86vh;overflow:auto}
+  .modal{background:#fff;border-radius:16px;max-width:560px;width:100%;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.3);max-height:88vh;overflow:auto}
   .modal h3{margin:0;font-size:18px}
   .modal .mp{font-size:12px;color:var(--ink2);margin-top:3px}
   .mclose{float:right;border:none;background:#f1f5f9;width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:16px;color:var(--ink2)}
-  .mkpis{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:16px 0}
+  .mkpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}
   .mkpi{background:#f0f6ff;border:1px solid #d8e6ff;border-radius:10px;padding:11px}
+  .mkpi.pot{background:#f3f0ff;border-color:#e2d9fb}
   .mkpi .kk{font-size:10px;color:#3b5bdb;font-weight:700;text-transform:uppercase;letter-spacing:.3px}
-  .mkpi .kv{font-size:18px;font-weight:800;margin-top:3px;color:#1e3a8a}
+  .mkpi.pot .kk{color:#6d28d9}
+  .mkpi .kv{font-size:17px;font-weight:800;margin-top:3px;color:#1e3a8a}
+  .mkpi.pot .kv{color:#6d28d9}
   .seclbl{font-size:11px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:#3b5bdb;margin:18px 0 7px}
   .ftab{width:100%;border-collapse:collapse;font-size:11.5px;margin-top:2px}
   .ftab th{text-align:left;color:#5b6676;font-weight:700;border-bottom:1px solid #e6e9ef;padding:5px 6px;white-space:nowrap}
   .ftab td{padding:5px 6px;border-bottom:1px solid #f1f5f9;color:#0e1726}
   .tierbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
   .tierpill{font-size:11px;font-weight:700;background:#f0f6ff;border:1px solid #d8e6ff;color:#1e3a8a;border-radius:8px;padding:5px 9px}
-  .mrow{display:flex;justify-content:space-between;gap:14px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px}
-  .mrow span:first-child{color:var(--ink2);white-space:nowrap}
+  .mrow{display:flex;justify-content:space-between;gap:18px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px}
+  .mrow span:first-child{color:var(--ink2);white-space:nowrap;flex:0 0 34%}
   .mrow span:last-child{font-weight:600;text-align:right}
   .mlink{display:inline-block;margin:12px 8px 0 0;padding:8px 12px;border:1px solid #d8e6ff;background:#f0f6ff;border-radius:9px;color:#1e3a8a;font-weight:700;font-size:12.5px;text-decoration:none}
   .mlink:hover{background:#e2eeff}
@@ -110,21 +117,24 @@
 
 <script>
 // ── DATA ──────────────────────────────────────────────────────────────
-// group: "active" = in build/review · "possible" = researched, not green-lit
-// kpis: 3 card metrics · modalKpis: 2 top boxes in detail view
+// group: "active" | "possible" · rank: build-next priority (possible only)
+// kpis: 3 card metrics (incl. 12-mo rev + potential) · detail: full drill-in
 const PROJECTS = [
   // ───────────── ACTIVE BUILDS ─────────────
   {
     id:"cert", group:"active", name:"Certification & License Expiry Tracker", platform:"monday.com marketplace",
-    status:"review", mrr:0, customers:0, trials:0, source:"monday handles billing",
+    status:"review", mrr:0, customers:0, trials:0, source:"monday handles billing", potential:"4.0",
     note:"App #1 — SUBMITTED to monday marketplace · in review",
-    kpis:[{k:"MRR now",v:"$0"},{k:"Est. @ 6 mo",v:"$0.3–0.9k"},{k:"Est. @ 1 yr",v:"$1.2–3.5k"}],
-    modalKpis:[{k:"Expected MRR @ 6 months",v:"$0.3–0.9k/mo"},{k:"Expected MRR @ 1 year",v:"$1.2–3.5k/mo"}],
+    kpis:[{k:"Est. @ 6 mo",v:"$0.3–0.9k"},{k:"Est. @ 1 yr",v:"$1.2–3.5k"},{k:"Potential",v:"4.0/5",pot:true}],
     detail:{
-      Stage:"Submitted 2026-06-06; awaiting monday review (~2–4 wks, 1–3 feedback rounds)",
-      Pricing:"Free 10 ppl / $19·50 / $49·150 / $99·unltd per month",
-      "Reachable market":"~63k monday accounts >10 users; regulated-workforce niche subset",
-      "First $ target":"~Aug–Sep 2026",
+      Solution:"Tracks employee certification & license expiry on monday boards; auto-reminders before lapse",
+      "Market size":"~63k monday accounts >10 users; regulated-workforce niche subset",
+      "Pricing model":"Free 10 ppl / $19·50 / $49·150 / $99·unltd per month (monday billing)",
+      Integrations:"monday Apps Framework + webhooks; email",
+      "Website / app":"Runs inside monday; marketplace listing + help site",
+      "Build — Claude":"100% built — submitted v3",
+      "Build — you (human walls)":"monday dev account ✅, marketplace submission ✅, support inbox",
+      Stage:"Submitted 2026-06-06; awaiting review (~2–4 wks)",
       "60-day checkpoint":"scale + build COI app, or retire"
     },
     liveTiers:{ installs:0, free:0, starter:0, growth:0, pro:0, mrr:0 },
@@ -143,130 +153,158 @@ const PROJECTS = [
   {
     id:"jobber-rem", group:"active", name:"DueBell — Service Reminders", platform:"Jobber App Marketplace",
     icon:`<svg viewBox="0 0 384 384" width="40" height="40" aria-hidden="true"><rect width="384" height="384" rx="84" fill="#d98a1f"/><path d="M251.2 73.1A140 140 0 1 1 132.8 73.1" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="18" stroke-linecap="round"/><polygon points="152.7,63.8 132.9,87.4 121.9,63.8" fill="#fff" fill-opacity=".5"/><g fill="#fff"><circle cx="192" cy="120" r="13"/><path d="M192 132C156 132 150 166 150 196 150 222 143 238 132 248L252 248C241 238 234 222 234 196 234 166 228 132 192 132Z"/><circle cx="192" cy="266" r="14"/></g></svg>`,
-    status:"build", mrr:0, customers:0, trials:0, source:"Stripe (ours) — to be wired",
+    status:"build", mrr:0, customers:0, trials:0, source:"Stripe (ours) — to be wired", potential:"4.6",
     website:"https://getduebell.com",
     note:"Build #2 — IN BUILD · brand + backend done · API de-risked ✅",
-    kpis:[{k:"MRR now",v:"$0"},{k:"Est. @ 6 mo",v:"$1.4–3.2k"},{k:"Est. @ 1 yr",v:"$4.5–9k"}],
-    modalKpis:[{k:"Expected MRR @ 6 months",v:"$1.4–3.2k/mo"},{k:"Expected MRR @ 1 year",v:"$4.5–9k/mo"}],
+    kpis:[{k:"Est. @ 6 mo",v:"$1.4–3.2k"},{k:"Est. @ 1 yr",v:"$4.5–9k"},{k:"Potential",v:"4.6/5",pot:true}],
     detail:{
-      Stage:"In build (started 2026-06-06). Jobber API confirmed: visit-history + request-creation. Email-first MVP.",
-      Pricing:"$29 / $49 / $79 per month by client count (~$45 blended)",
-      "Market":"~250–300k Jobber businesses; ~80–120k repeat-service trades",
+      Solution:"Auto 'your annual service is due' reminders for repeat-service trades on Jobber (from last-visit + frequency)",
+      "Market size":"~250–300k Jobber businesses; ~80–120k repeat-service trades addressable",
+      "Pricing model":"$29 / $49 / $79 per month by client count (~$45 blended); our Stripe",
+      Integrations:"Jobber GraphQL API + OAuth; Resend email; Twilio SMS (v1.1)",
+      "Website / app":"getduebell.com live; Jobber marketplace listing; standalone backend (Render)",
+      "Build — Claude":"~90% — backend 39/39 tests; email-first MVP",
+      "Build — you (human walls)":"Jobber dev account ✅, OAuth app ✅, Stripe connect, later Twilio/A2P, marketplace submission",
       Edge:"Decade of explicit forum demand; vendor-confirmed gap; makes customers money",
       "Next":"deploy backend → Stripe → Jobber marketplace submission → first paying customer"
     }
   },
 
-  // ───────────── POSSIBLE PROJECTS (researched, not green-lit) ─────────────
+  // ───────────── POSSIBLE PROJECTS (ordered by build-next priority) ─────────────
   {
-    id:"jobber-comm", group:"possible", name:"Jobber Commission Calculator", platform:"Jobber App Marketplace",
-    status:"possible", mrr:0, customers:0, trials:0, source:"Prepped · brief written",
-    note:"Was green-lit #3 → moved to Possible 2026-06-09",
-    kpis:[{k:"Est. @ 6 mo",v:"$0.5–1.4k"},{k:"Est. @ 1 yr",v:"$1.4–3.5k"},{k:"Grade",v:"B"}],
-    modalKpis:[{k:"Honest ceiling @ 1 yr",v:"$1.4–3.5k/mo"},{k:"Build cost",v:"Low (reuses DueBell)"}],
+    id:"ghl-field", group:"possible", rank:1, name:"GHL Field-Service app (Jobber-lite)", platform:"GoHighLevel Marketplace",
+    status:"possible", mrr:0, customers:0, trials:0, source:"Discovery v3 · score 4.2", potential:"4.5",
+    note:"⭐ My #1 next — best distribution + loudest demand",
+    kpis:[{k:"Est. @ 6 mo",v:"$0.8–2.5k"},{k:"Est. @ 1 yr",v:"$2.5–8k"},{k:"Potential",v:"4.5/5",pot:true}],
     detail:{
-      What:"Commission/performance-pay statements for small Jobber service shops (% of revenue/GP, tiers, splits)",
-      "Demand":"Real — Jobber is hourly-only; Gusto integration can't do commission",
-      "⚠ Risk":"Protiv is a funded incumbent already on the Jobber marketplace (~$10/worker/mo)",
-      Wedge:"Cheaper/simpler sales-commission for small shops Protiv serves poorly",
-      Verdict:"Cheap to attempt (shared stack) — pursue only via a sharp wedge + validation gate"
-    },
-    links:[{label:"Prep & Brief doc", url:"https://github.com/jaminaustinai-eng"}]
-  },
-  {
-    id:"klaviyo", group:"possible", name:"Klaviyo Billing Guard", platform:"Klaviyo (self-distributed)",
-    status:"possible", mrr:0, customers:0, trials:0, source:"Prepped · brief written",
-    note:"Was green-lit #4 → moved to Possible 2026-06-09",
-    kpis:[{k:"Est. @ 6 mo",v:"$0.9–2.5k"},{k:"Est. @ 1 yr",v:"$2.5–7k"},{k:"Ceiling",v:"High"}],
-    modalKpis:[{k:"Ceiling @ 1 yr",v:"$2.5–7k/mo"},{k:"Distribution fit",v:"Worst (adversarial)"}],
-    detail:{
-      What:"Auto-suppress billable-but-worthless Klaviyo profiles to cut the bill; '$ saved' dashboard",
-      "Demand":"Strongest — 193k customers, $-denominated ROI, loud 2025 repricing anger",
-      "⚠ Risk":"Adversarial platform (Klaviyo profits from the waste); NO marketplace funnel; Klaviyo ships free native cleanup",
-      Verdict:"Biggest ceiling, hardest distribution — a deliberate later bet, after a marketplace win + agency validation"
+      Solution:"GHL-native field-service layer for trades: scheduling/dispatch, tech GPS, 'on-my-way' SMS, before/after photos in a client portal, job-linked invoicing",
+      "Market size":"600k+ GHL users; 60k agencies; trades/home-services = one of the largest agency verticals",
+      "Pricing model":"$29–79/mo per sub-account, agency-rebilled with markup; native GHL billing (15% rev-share)",
+      Integrations:"GoHighLevel API (CRM, calendars, conversations, payments); Twilio SMS; optional QuickBooks",
+      "Website / app":"Runs inside GHL (no standalone app); GHL marketplace listing + light marketing site",
+      "Build — Claude (~85%)":"Scheduling/dispatch, photo capture, SMS flows, client portal, invoicing — on Render",
+      "Build — you (human walls)":"GHL developer/agency account, OAuth app, billing setup, marketplace submission, domain (~$10), approvals",
+      Distribution:"GHL Marketplace; agencies auto-bundle across ALL sub-accounts (1 sale → dozens of seats); 145-vote request = warm leads",
+      "⚠ Risk":"Contested (FieldTask, WorkSyncer) + GHL could build it — win on trades depth + customer-facing UX"
     }
   },
   {
-    id:"whop", group:"possible", name:"Whop App — creator-community tool", platform:"Whop App Store",
-    status:"possible", mrr:0, customers:0, trials:0, source:"Discovery v3 · score 4.4",
-    note:"⭐ Boldest emerging bet — young store, native recurring billing",
-    kpis:[{k:"Fit",v:"4.4/5"},{k:"Distribution",v:"5/5"},{k:"Demand",v:"4/5"}],
-    modalKpis:[{k:"Overall fit",v:"4.4 / 5"},{k:"Platform maturity",v:"New (Sept 2025)"}],
+    id:"feedguard", group:"possible", rank:2, name:"FeedGuard — Merchant Center watchdog", platform:"Shopify + Google API",
+    status:"possible", mrr:0, customers:0, trials:0, source:"Discovery v3 · score 4.2", potential:"4.2",
+    note:"#2 next — friendliest platform, self-running, low risk",
+    kpis:[{k:"Est. @ 6 mo",v:"$0.4–1.5k"},{k:"Est. @ 1 yr",v:"$1.5–5k"},{k:"Potential",v:"4.2/5",pot:true}],
     detail:{
-      What:"A vertical recurring tool installed inside paying creator communities (trading/fitness/coaching)",
-      "Distribution":"Land 1 creator → inherit their member base; install-ranking flywheel; store only ~39 live apps",
-      "Demand":"Whop ~$142M annualized rev (+255%); SDK handles subscriptions/dunning/payouts",
-      Pricing:"~$1/member/mo or 10–30% rev-share",
-      "⚠ Risk":"Earnings top-heavy (~9/10 products earn $0) — target top-decile creators only"
+      Solution:"Watches Google Merchant Center daily; instant email/Slack alert on product disapprovals, feed drops, or policy warnings — with reason + affected SKUs",
+      "Market size":"Hundreds of thousands of Shopify+Woo merchants run Google Shopping; tens of thousands feed-conscious + PPC agencies",
+      "Pricing model":"$19–49/mo SMB; $99+/mo agency multi-account; our Stripe",
+      Integrations:"Google Content API for Shopping; Shopify; Slack/email; optional Google Ads",
+      "Website / app":"Shopify App Store listing + SEO marketing site + free 'wasted-spend' calculator; standalone web app",
+      "Build — Claude (~90%)":"API polling, diff engine, alerting, dashboard — runs itself",
+      "Build — you (human walls)":"Google API project + verification, Shopify Partner account, Stripe, domain (~$10), approvals",
+      Distribution:"Shopify App Store (friendly) + SEO ('Merchant Center disapproval alert') + PPC-freelancer community (they hand-roll scripts today)",
+      "⚠ Risk":"Native GMC alerts (noisy) + enterprise incumbents (Feedonomics) — wedge is the cheap self-serve SMB low end"
     }
   },
   {
-    id:"ghl-field", group:"possible", name:"GHL Field-Service app (Jobber-lite)", platform:"GoHighLevel Marketplace",
-    status:"possible", mrr:0, customers:0, trials:0, source:"Discovery v3 · score 4.2",
-    note:"Loudest marketplace plea found (145 votes, 'I PROMISE IF YOU DO THIS')",
-    kpis:[{k:"Fit",v:"4.2/5"},{k:"Distribution",v:"5/5"},{k:"Demand",v:"5/5"}],
-    modalKpis:[{k:"Overall fit",v:"4.2 / 5"},{k:"Platform",v:"GHL · 60k agencies"}],
+    id:"cleanbooks", group:"possible", rank:3, name:"CleanBooks — HCP ↔ QuickBooks repair", platform:"Housecall Pro + QuickBooks",
+    status:"possible", mrr:0, customers:0, trials:0, source:"Discovery v3 · score 4.0", potential:"4.1",
+    note:"#3 next — strongest demand quotes, no real incumbent",
+    kpis:[{k:"Est. @ 6 mo",v:"$0.6–2k"},{k:"Est. @ 1 yr",v:"$2–6k"},{k:"Potential",v:"4.1/5",pot:true}],
     detail:{
-      What:"GHL-native scheduling/dispatch + tech GPS + on-my-way SMS + before/after photos + job invoicing",
-      "Distribution":"GHL marketplace; agencies auto-bundle across all sub-accounts (1 sale → dozens of seats)",
-      "Demand":"145-vote request thread = warm lead list; native recurring billing",
-      Pricing:"$29–79/mo per sub-account, agency-rebilled",
-      "⚠ Risk":"Contested (FieldTask) + GHL could build it — win on trades depth + customer-facing UX"
+      Solution:"Sits between Housecall Pro and QuickBooks Online; de-dupes/reconciles the messy sync and generates the clean customer statements HCP can't",
+      "Market size":"200k+ HCP pros; same engine resells to Jobber/ServiceTitan/ServiceM8 later",
+      "Pricing model":"$49–99/mo; our Stripe (owners already pay bookkeepers $200–800/mo partly for this)",
+      Integrations:"Housecall Pro API; QuickBooks Online API; optional Stripe",
+      "Website / app":"QuickBooks App Store listing + marketing site; standalone web dashboard",
+      "Build — Claude (~85%)":"Sync diffing, fuzzy transaction matching (AI), statement/PDF rendering",
+      "Build — you (human walls)":"HCP + QuickBooks developer apps, Stripe, domain (~$10), approvals",
+      Distribution:"QuickBooks App Store + bookkeeper referral loop (HCP's own store is curated → not the main channel)",
+      "⚠ Risk":"HCP store curated — distribution leans on QBO marketplace + accountants, not HCP placement"
     }
   },
   {
-    id:"feedguard", group:"possible", name:"FeedGuard — Merchant Center watchdog", platform:"Shopify + Google API",
-    status:"possible", mrr:0, customers:0, trials:0, source:"Discovery v3 · score 4.2",
-    note:"Friendliest platform fit — self-running watchdog, clean SMB wedge",
-    kpis:[{k:"Fit",v:"4.2/5"},{k:"Distribution",v:"4/5"},{k:"Margin",v:"5/5"}],
-    modalKpis:[{k:"Overall fit",v:"4.2 / 5"},{k:"Platform",v:"Friendly (Google/Shopify)"}],
+    id:"whop", group:"possible", rank:4, name:"Whop App — creator-community tool", platform:"Whop App Store",
+    status:"possible", mrr:0, customers:0, trials:0, source:"Discovery v3 · score 4.4", potential:"4.0",
+    note:"#4 — highest ceiling + boldest, but most uncertain",
+    kpis:[{k:"Est. @ 6 mo",v:"$0.4–1.5k"},{k:"Est. @ 1 yr",v:"$1.5–6k"},{k:"Potential",v:"4.0/5",pot:true}],
     detail:{
-      What:"Watches Google Merchant Center daily; instant alert on product disapprovals / feed drops + the reason + SKUs",
-      "Distribution":"Shopify App Store + SEO + PPC-freelancer community (they hand-roll Ads Scripts today)",
-      "Demand":"'Thousands in lost revenue/day' from disapproved hero SKUs; DIY scripts prove the gap",
-      Pricing:"$19–49/mo SMB; $99+/mo agency",
-      "⚠ Risk":"Native GMC alerts (noisy) + enterprise incumbents (Feedonomics) — wedge is the cheap SMB low end"
+      Solution:"A vertical recurring tool installed inside paying creator communities (member-retention/analytics/CRM-lite for trading, fitness, coaching)",
+      "Market size":"Whop ~$142M annualized rev (+255%), 18M users, 183k sellers; app store young (~39 live apps)",
+      "Pricing model":"~$1/member/mo or 10–30% rev-share; Whop SDK handles billing/dunning/payouts",
+      Integrations:"Whop SDK (auth, billing, payouts); Next.js; optional Discord/community APIs",
+      "Website / app":"App runs inside Whop (creators install it); light creator landing page",
+      "Build — Claude (~85%)":"The vertical tool; Whop runs all the money plumbing",
+      "Build — you (human walls)":"Whop developer account, app submission, payout setup, approvals (minimal — Whop bills)",
+      Distribution:"Land 10–30 mid-size creators → inherit their member bases; App Store install-ranking flywheel",
+      "⚠ Risk":"Earnings top-heavy (~9/10 products earn $0) — target proven top-decile creators only; B2B durability unproven"
     }
   },
   {
-    id:"cleanbooks", group:"possible", name:"CleanBooks — HCP ↔ QuickBooks repair", platform:"Housecall Pro + QuickBooks",
-    status:"possible", mrr:0, customers:0, trials:0, source:"Discovery v3 · score 4.0",
-    note:"Strongest demand quotes ('accountants want to scream')",
-    kpis:[{k:"Fit",v:"4.0/5"},{k:"Demand",v:"5/5"},{k:"Originality",v:"4/5"}],
-    modalKpis:[{k:"Overall fit",v:"4.0 / 5"},{k:"Incumbent",v:"None (manual bookkeeping)"}],
+    id:"listinglock", group:"possible", rank:5, name:"ListingLock — Google Business watchdog", platform:"Google Business Profile API",
+    status:"possible", mrr:0, customers:0, trials:0, source:"Discovery v3 · score 4.0", potential:"3.8",
+    note:"#5 — agency multiplier, but incumbents exist",
+    kpis:[{k:"Est. @ 6 mo",v:"$0.5–1.8k"},{k:"Est. @ 1 yr",v:"$1.5–5k"},{k:"Potential",v:"3.8/5",pot:true}],
     detail:{
-      What:"De-dupes/reconciles the messy HCP→QuickBooks sync + generates clean customer statements HCP can't",
-      "Distribution":"QuickBooks App Store + bookkeeper referral loop; engine resells to Jobber/ServiceTitan later",
-      "Demand":"Visceral, present-tense pain quotes; owners pay bookkeepers $200–800/mo partly for this",
-      Pricing:"$49–99/mo",
-      "⚠ Risk":"HCP's own store is curated (no self-serve) — distribute via QBO + accountants"
+      Solution:"Snapshots each Google Business Profile; instant alert on any change (hours, phone, website, address, primary category, 'permanently closed')",
+      "Market size":"Tens of millions of GBPs; the agency-managed segment is the wedge",
+      "Pricing model":"$2–5/location/mo or $49–149/mo agency tiers; our Stripe",
+      Integrations:"Google Business Profile API + official change webhooks; Slack/email",
+      "Website / app":"Agency-focused marketing site + multi-tenant web dashboard",
+      "Build — Claude (~90%)":"Snapshot/diff, alerting, multi-tenant dashboard",
+      "Build — you (human walls)":"Google API project + verification, Stripe, domain (~$10), agency outreach, approvals",
+      Distribution:"Sell to local-SEO agencies (1 buyer = dozens of locations) + SEO",
+      "⚠ Risk":"Incumbents (Local Falcon, BrightLocal) + open webhook lowers tech moat — win on cheap alert-first UX + agency relationships"
     }
   },
   {
-    id:"listinglock", group:"possible", name:"ListingLock — Google Business watchdog", platform:"Google Business Profile API",
-    status:"possible", mrr:0, customers:0, trials:0, source:"Discovery v3 · score 4.0",
-    note:"Agency multiplier — 1 agency = dozens of monitored locations",
-    kpis:[{k:"Fit",v:"4.0/5"},{k:"Distribution",v:"4/5"},{k:"Margin",v:"5/5"}],
-    modalKpis:[{k:"Overall fit",v:"4.0 / 5"},{k:"Platform",v:"Friendly (official webhook)"}],
+    id:"coi", group:"possible", rank:6, name:"COI / Vendor-Document Expiry Tracker", platform:"monday.com marketplace",
+    status:"possible", mrr:0, customers:0, trials:0, source:"Parked · shares ~70% Cert code", potential:"3.6",
+    note:"#6 — easy reuse, but contingent on Cert traction",
+    kpis:[{k:"Est. @ 6 mo",v:"$1–2k"},{k:"Est. @ 1 yr",v:"$4–8k"},{k:"Potential",v:"3.6/5",pot:true}],
     detail:{
-      What:"Snapshots each Google Business Profile; instant alert on any change (hours/phone/address/'permanently closed')",
-      "Distribution":"Sell to local-SEO agencies (multi-tenant) + SEO; fast path to 1,000 monitored profiles",
-      "Demand":"Anyone can 'suggest an edit' & Google auto-accepts; a fake 'closed' kills client lead-flow",
-      Pricing:"$2–5/location/mo or $49–149/mo agency",
-      "⚠ Risk":"Incumbents (Local Falcon, BrightLocal) — win on cheap alert-first UX + agency relationships"
+      Solution:"Certificate-of-insurance / vendor-document expiry tracking on monday (reuses ~70% of Cert Tracker)",
+      "Market size":"Contractors / property managers / field services on monday",
+      "Pricing model":"~$40–120/mo; monday handles billing",
+      Integrations:"monday Apps Framework + webhooks; email",
+      "Website / app":"Runs inside monday; marketplace listing",
+      "Build — Claude (~90%)":"Mostly a reskin/extension of the Cert Tracker codebase",
+      "Build — you (human walls)":"monday dev account (have it), marketplace submission, approvals",
+      Distribution:"monday marketplace; fast-follow once Cert Tracker proves the funnel",
+      "⚠ Risk":"Contingent on Cert Tracker's 60-day read — don't build until Cert shows traction"
     }
   },
   {
-    id:"coi", group:"possible", name:"COI / Vendor-Document Expiry Tracker", platform:"monday.com marketplace",
-    status:"possible", mrr:0, customers:0, trials:0, source:"Parked · shares ~70% Cert code",
-    note:"Fast-follow to Cert Tracker (triggered by its 60-day checkpoint)",
-    kpis:[{k:"Est. @ 6 mo",v:"$1–2k"},{k:"Est. @ 1 yr",v:"$4–8k"},{k:"Build",v:"Low"}],
-    modalKpis:[{k:"Expected MRR @ 6 months",v:"$1–2k/mo"},{k:"Expected MRR @ 1 year",v:"$4–8k/mo"}],
+    id:"klaviyo", group:"possible", rank:7, name:"Klaviyo Billing Guard", platform:"Klaviyo (self-distributed)",
+    status:"possible", mrr:0, customers:0, trials:0, source:"Prepped · brief written", potential:"3.4",
+    note:"#7 — biggest ceiling, hardest distribution (later bet)",
+    kpis:[{k:"Est. @ 6 mo",v:"$0.9–2.5k"},{k:"Est. @ 1 yr",v:"$2.5–7k"},{k:"Potential",v:"3.4/5",pot:true}],
     detail:{
-      What:"Certificate-of-insurance / vendor-document expiry tracking on monday",
-      "Market":"Contractors / property managers / field services on monday",
-      Pricing:"~$40–120/mo",
-      Verdict:"Reuses ~70% of Cert Tracker; ship if Cert's 60-day read says scale"
+      Solution:"Auto-suppress billable-but-worthless Klaviyo profiles to cut the bill; safe (dry-run, never touch engaged/recent-purchaser/abandoned-cart); '$ saved' dashboard",
+      "Market size":"193k+ Klaviyo customers; tens of thousands on paid tiers where waste is material; 6k agencies (multiplier)",
+      "Pricing model":"$29/$59/$99 by profile count (~$45–55 blended) + agency white-label; optional % of savings; our Stripe",
+      Integrations:"Klaviyo OAuth + API (Suppress Profiles — beta); Stripe",
+      "Website / app":"Owned SEO site + ROI calculator = PRIMARY channel; standalone web app",
+      "Build — Claude (~85%)":"Suppression engine + safety guardrails + audit/undo + savings dashboard + agency layer",
+      "Build — you (human walls)":"Klaviyo developer/partner account, Stripe, domain (~$10), agency outreach, approvals",
+      Distribution:"100% self-built — NO marketplace funnel (adversarial platform); SEO + agencies + communities",
+      "⚠ Risk":"Adversarial platform (Klaviyo profits from waste); beta API; write-access liability; Klaviyo could neutralize with native auto-cleanup"
+    }
+  },
+  {
+    id:"jobber-comm", group:"possible", rank:8, name:"Jobber Commission Calculator", platform:"Jobber App Marketplace",
+    status:"possible", mrr:0, customers:0, trials:0, source:"Prepped · brief written", potential:"3.0",
+    note:"#8 — cheap to build, but Protiv incumbent + small ceiling",
+    kpis:[{k:"Est. @ 6 mo",v:"$0.5–1.4k"},{k:"Est. @ 1 yr",v:"$1.4–3.5k"},{k:"Potential",v:"3.0/5",pot:true}],
+    detail:{
+      Solution:"Commission/performance-pay statements for small Jobber shops: % of revenue/GP, tiers, splits, spiffs; per-tech payroll-period statements; CSV to Gusto/QBO",
+      "Market size":"~15–35k Jobber shops paying commission (of ~200–250k Jobber businesses)",
+      "Pricing model":"$19/$39/$59 by team size (~$30–35 blended); our Stripe",
+      Integrations:"Jobber GraphQL API/OAuth; QuickBooks/Gusto CSV export; Stripe",
+      "Website / app":"Light marketing site + free commission calculator; Jobber marketplace listing; standalone web app",
+      "Build — Claude (~85%)":"Reuses DueBell's stack; new = commission engine + statements + CSV",
+      "Build — you (human walls)":"Jobber OAuth app (2nd in existing dev account), Stripe, domain (~$10), approvals",
+      Distribution:"Jobber marketplace + SEO — BUT Protiv (incumbent) owns the marketplace term",
+      "⚠ Risk":"Protiv funded incumbent on the marketplace; small ceiling — pursue only via a cheap/simple wedge + validation gate"
     }
   }
 ];
@@ -303,20 +341,21 @@ function renderTabs(){
   document.getElementById("tabs").innerHTML =
     `<button class="tab ${TAB==='active'?'active':''}" onclick="setTab('active')">Active Builds <span class="cnt">${nActive}</span></button>
      <button class="tab ${TAB==='possible'?'active':''}" onclick="setTab('possible')">Possible Projects <span class="cnt">${nPoss}</span></button>`;
-  document.getElementById("tabhint").textContent = TAB==="active"
-    ? "Projects in active build or marketplace review. Tap a card for details & MRR forecasts."
-    : "Researched & scored, not green-lit. Tap a card for the wedge, demand, and risk. Nothing here is committed.";
+  document.getElementById("tabhint").innerHTML = TAB==="active"
+    ? "Projects in active build or marketplace review. Tap a card for full details."
+    : "Researched &amp; scored, not committed — <b>ordered by what I'd build next</b> (#1 = my top pick). Tap a card for solution, market, pricing, integrations &amp; the build split.";
 }
 function setTab(t){ TAB=t; renderTabs(); renderGrid(); }
 
 function card(p){
   const [cls,label] = STATUS[p.status];
-  const kpis = (p.kpis||[]).map(x=>`<div class="kpi"><div class="kk">${x.k}</div><div class="kv">${x.v}</div></div>`).join("");
+  const kpis = (p.kpis||[]).map(x=>`<div class="kpi${x.pot?' pot':''}"><div class="kk">${x.k}</div><div class="kv">${x.v}</div></div>`).join("");
+  const rb = p.rank ? `<span class="rankbadge">#${p.rank}</span>` : "";
   return `<div class="card" onclick='openModal("${p.id}")'>
     <div class="ctop">
       <div class="chead">
         <div class="cicon">${iconHtml(p)}</div>
-        <div><div class="cname">${p.name}</div>
+        <div><div class="cname">${rb}${p.name}</div>
           <div class="platform"><span class="dot"></span>${p.platform}</div>
           ${p.website?`<a class="wsite" href="${p.website}" target="_blank" rel="noreferrer" onclick="event.stopPropagation()">🌐 ${p.website.replace(/^https?:\/\//,'')} ↗</a>`:""}</div>
       </div>
@@ -328,7 +367,9 @@ function card(p){
 }
 
 function renderGrid(){
-  document.getElementById("grid").innerHTML = PROJECTS.filter(p=>p.group===TAB).map(card).join("");
+  const items = PROJECTS.filter(p=>p.group===TAB);
+  if(TAB==="possible") items.sort((a,b)=>(a.rank||99)-(b.rank||99));
+  document.getElementById("grid").innerHTML = items.map(card).join("");
 }
 
 function openModal(id){
@@ -336,14 +377,19 @@ function openModal(id){
   const [cls,label] = STATUS[p.status];
   const rows = Object.entries(p.detail).map(([k,v])=>
     `<div class="mrow"><span>${k}</span><span>${v}</span></div>`).join("");
-  const mk = (p.modalKpis||[]).map(x=>`<div class="mkpi"><div class="kk">${x.k}</div><div class="kv">${x.v}</div></div>`).join("");
+  const k6 = (p.kpis.find(x=>/6 mo/.test(x.k))||{}).v || "—";
+  const k12 = (p.kpis.find(x=>/1 yr/.test(x.k))||{}).v || "—";
   document.getElementById("modal").innerHTML =
     `<button class="mclose" onclick="closeModal()">×</button>
      <div style="display:flex;gap:12px;align-items:center">
        <div class="cicon">${iconHtml(p)}</div>
-       <div><h3>${p.name}</h3><div class="mp">${p.platform} &nbsp;·&nbsp; <span class="pill ${cls}">${label}</span>${p.website?` &nbsp;·&nbsp; <a href="${p.website}" target="_blank" rel="noreferrer" class="linkchip">🌐 ${p.website.replace(/^https?:\/\//,'')} ↗</a>`:""}</div></div>
+       <div><h3>${p.rank?`#${p.rank} · `:""}${p.name}</h3><div class="mp">${p.platform} &nbsp;·&nbsp; <span class="pill ${cls}">${label}</span>${p.website?` &nbsp;·&nbsp; <a href="${p.website}" target="_blank" rel="noreferrer" class="linkchip">🌐 ${p.website.replace(/^https?:\/\//,'')} ↗</a>`:""}</div></div>
      </div>
-     ${mk?`<div class="mkpis">${mk}</div>`:""}
+     <div class="mkpis">
+       <div class="mkpi"><div class="kk">Est. MRR @ 6 mo</div><div class="kv">${k6}</div></div>
+       <div class="mkpi"><div class="kk">Est. MRR @ 1 yr</div><div class="kv">${k12}</div></div>
+       <div class="mkpi pot"><div class="kk">Potential</div><div class="kv">${p.potential}/5</div></div>
+     </div>
      <div class="mrow"><span>MRR today</span><span>${money(p.mrr)} · ${p.customers} customers · ${p.trials} trials</span></div>
      ${rows}
      ${p.liveTiers ? `<div class="seclbl">Live — installs &amp; users by tier</div>
@@ -357,17 +403,16 @@ function openModal(id){
        <div class="mrow" style="margin-top:8px"><span>MRR (live)</span><span>${money(p.liveTiers.mrr)}</span></div>` : ""}
      ${p.funnel ? `<div class="seclbl">Most-realistic forecast · post-approval clock</div>
        <table class="ftab"><tr><th>Period</th><th>Installs*</th><th>Active</th><th>Paying (S/G/P)</th><th>MRR (end)</th><th>Cash</th></tr>
-       ${p.funnel.map(f=>`<tr><td>${f.period}</td><td>${f.installs}</td><td>${f.active}</td><td>${f.paying} (${f.tiers})</td><td>${f.mrr}</td><td>${f.cash}</td></tr>`).join("")}</table>
-       <div class="cnote" style="margin-top:8px">*Installs cumulative. Base case; downside ≈ near-zero (discovery fails), upside ≈ 2–3× (reviews + a forum thread land).</div>` : ""}
+       ${p.funnel.map(f=>`<tr><td>${f.period}</td><td>${f.installs}</td><td>${f.active}</td><td>${f.paying} (${f.tiers})</td><td>${f.mrr}</td><td>${f.cash}</td></tr>`).join("")}</table>` : ""}
      ${(p.links||[]).map(l=>`<a class="mlink" href="${l.url}" target="_blank" rel="noreferrer">${l.label} ↗</a>`).join("")}
-     <div class="cnote" style="margin-top:14px">${p.group==='possible'?'Possible project — researched, not committed. Scores from Discovery Sprint v3 (·/5).':'Forecasts are mid-case modeled ranges (±50%), post-launch clock.'}<span class="src">${p.source}</span></div>`;
+     <div class="cnote" style="margin-top:14px">${p.group==='possible'?'Possible project — researched, not committed. Revenue = mid-case modeled range (±50%); Potential = Claude\\'s overall rating /5.':'Forecasts are mid-case modeled ranges (±50%), post-launch clock.'}<span class="src">${p.source}</span></div>`;
   document.getElementById("ov").classList.add("show");
 }
 function closeModal(){ document.getElementById("ov").classList.remove("show"); }
 
 document.getElementById("updated").textContent = "Updated " + new Date().toLocaleString();
 document.getElementById("footer").innerHTML =
-  "Active builds = monday Cert Tracker (in review) + DueBell (in build). Possible Projects = researched & scored, not green-lit (Discovery Sprint v3, 2026-06-09). MRR-now figures are placeholders until live-data wiring. Internal use only.";
+  "Active builds = monday Cert Tracker (in review) + DueBell (in build). Possible Projects = researched & scored (Discovery Sprint v3, 2026-06-09), ordered by build-next priority. Revenue figures are mid-case modeled ranges (±50%) — placeholders until live-data wiring. Internal use only.";
 renderTiles(); renderTabs(); renderGrid();
 </script>
 </body>
