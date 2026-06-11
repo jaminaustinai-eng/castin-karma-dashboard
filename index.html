@@ -153,9 +153,9 @@ const PROJECTS = [
   {
     id:"jobber-rem", group:"active", name:"DueBell — Service Reminders", platform:"Jobber App Marketplace",
     icon:`<svg viewBox="0 0 384 384" width="40" height="40" aria-hidden="true"><rect width="384" height="384" rx="84" fill="#d98a1f"/><path d="M251.2 73.1A140 140 0 1 1 132.8 73.1" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="18" stroke-linecap="round"/><polygon points="152.7,63.8 132.9,87.4 121.9,63.8" fill="#fff" fill-opacity=".5"/><g fill="#fff"><circle cx="192" cy="120" r="13"/><path d="M192 132C156 132 150 166 150 196 150 222 143 238 132 248L252 248C241 238 234 222 234 196 234 166 228 132 192 132Z"/><circle cx="192" cy="266" r="14"/></g></svg>`,
-    status:"build", mrr:0, customers:0, trials:0, source:"Stripe (ours) — to be wired", potential:"4.6",
+    status:"review", mrr:0, customers:0, trials:0, source:"Stripe (ours) — to be wired", potential:"4.6",
     website:"https://getduebell.com",
-    note:"Build #2 — IN BUILD · brand + backend done · API de-risked ✅",
+    note:"Build #2 — SUBMITTED to Jobber · IN REVIEW (2026-06-09) · live backend + daily reminders + verified email ✅",
     kpis:[{k:"Est. @ 6 mo",v:"$1.4–3.2k"},{k:"Est. @ 1 yr",v:"$4.5–9k"},{k:"Potential",v:"4.6/5",pot:true}],
     detail:{
       Solution:"Auto 'your annual service is due' reminders for repeat-service trades on Jobber (from last-visit + frequency)",
@@ -163,10 +163,10 @@ const PROJECTS = [
       "Pricing model":"$29 / $49 / $79 per month by client count (~$45 blended); our Stripe",
       Integrations:"Jobber GraphQL API + OAuth; Resend email; Twilio SMS (v1.1)",
       "Hosting (site / app)":"YES — we host a marketing site (getduebell.com, Cloudflare ✅) + a backend service (Render). Product is email + the Jobber listing; no consumer app.",
-      "Build — Claude":"~90% — backend 39/39 tests; email-first MVP",
-      "Build — you (human walls)":"Jobber dev account ✅, OAuth app ✅, Stripe connect, later Twilio/A2P, marketplace submission",
+      "Build — Claude":"~95% — backend 48/48 tests; deployed (Render) + OAuth + daily cron + verified Resend email + APP_DISCONNECT webhook",
+      "Build — you (human walls)":"Jobber dev account ✅, OAuth app ✅, 2FA ✅, marketplace submission ✅ (IN REVIEW); still: Stripe connect, later Twilio/A2P",
       Edge:"Decade of explicit forum demand; vendor-confirmed gap; makes customers money",
-      "Next":"deploy backend → Stripe → Jobber marketplace submission → first paying customer"
+      "Next":"Jobber review (in queue) → Stripe billing → upgrade Render before free DB expires (~Jul 8) → first paying customer"
     }
   },
 
@@ -412,7 +412,7 @@ function closeModal(){ document.getElementById("ov").classList.remove("show"); }
 
 document.getElementById("updated").textContent = "Updated " + new Date().toLocaleString();
 document.getElementById("footer").innerHTML =
-  "Active builds = monday Cert Tracker (in review) + DueBell (in build). Possible Projects = researched & scored (Discovery Sprint v3, 2026-06-09), ordered by build-next priority. Revenue figures are mid-case modeled ranges (±50%) — placeholders until live-data wiring. Internal use only.";
+  "Active builds = monday Cert Tracker (in review) + DueBell (submitted to Jobber · in review). Possible Projects = researched & scored (Discovery Sprint v3, 2026-06-09), ordered by build-next priority. Revenue figures are mid-case modeled ranges (±50%) — placeholders until live-data wiring. Internal use only.";
 renderTiles(); renderTabs(); renderGrid();
 </script>
 </body>
